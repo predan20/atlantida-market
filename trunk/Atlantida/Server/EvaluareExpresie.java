@@ -10,6 +10,7 @@ public class EvaluareExpresie
 	private String operatiiSimple = "";
 	private String campuriProdus = "";
 	private String formula = "";
+	
 	private ArrayList<ElementeAtribuire> elemente = new ArrayList<ElementeAtribuire>();
 	
 	public EvaluareExpresie(String expresie)
@@ -27,6 +28,7 @@ public class EvaluareExpresie
 	{
 		return campuriProdus;
 	}
+	
 	
 	public ArrayList<ElementeAtribuire> getElemente()
 	{
@@ -73,7 +75,7 @@ public class EvaluareExpresie
 		ArrayList<ElementeAtribuire> ret = new ArrayList<ElementeAtribuire>();
 		
 		Pattern varSt = Pattern.compile("([a-z0-9]+)=");
-		Pattern varDr = Pattern.compile("=([a-zA-Z0-9()]+)");
+		Pattern varDr = Pattern.compile("=([a-zA-Z0-9()]+)([a-zA-Z0-9\\[\\]()]*)");
 		
 		Matcher mSt = varSt.matcher(expresie);
 
