@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Server"/>
+	<classpathentry kind="src" path="Client"/>
+	<classpathentry kind="src" path="Administrator"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/java/test/IP/eval/jep-2.4.1-ext-1.1.1-gpl/dist/jep-2.4.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
