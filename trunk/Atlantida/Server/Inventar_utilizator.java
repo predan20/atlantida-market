@@ -287,7 +287,7 @@ public class Inventar_utilizator extends BazaDeDate
 
 
 	public ArrayList<String> calculProdus(String numeUtilizator, int idParinte,
-			String campuriProdus, String restrictie) 
+			String campuriProdus) 
 	{		
 		try
 		{
@@ -298,14 +298,8 @@ public class Inventar_utilizator extends BazaDeDate
 			ArrayList<Float> produs;
 			ArrayList<String> rezultat = new ArrayList<String>();
 		
-			comanda = "select " + campuriProdus +  " from " + numeUtilizator + " WHERE parinte="  + idParinte;
+			comanda = "select " + campuriProdus +  " from " + numeUtilizator + " WHERE parinte="  + idParinte + ";";
 			
-			if(restrictie != "")
-			{
-				comanda += " AND " + restrictie + " IS NOT NULL";
-			}
-			
-			comanda += ";";
 			rezultatProd = decl.executeQuery(comanda);
 			rezultatMD = (ResultSetMetaData)rezultatProd.getMetaData();
 			
@@ -422,7 +416,7 @@ public class Inventar_utilizator extends BazaDeDate
 		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple);
 		evaluareExpresie.setValoriElemente(evalList,false);
 		
-		this.calculProdus(numeUtilizator, idParinte, campuriProdus, "");
+		this.calculProdus(numeUtilizator, idParinte, campuriProdus);
 		evaluareExpresie.setValoriElemente(evalList, true);
 		
 		float valPropSpeciala;
