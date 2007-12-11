@@ -3,19 +3,19 @@ import java.sql.*;
 public class BazaDeDate
 {
 	protected Connection conn = null;
-	protected String host = "";
-	protected String port = "";
+	protected String host = "89.43.103.108";
+	protected String port = "3306";
 	protected String numeBazaDate = "";
-	protected String utilizator = "";
-	protected String parola = "";
+	protected String utilizator = "root";
+	protected String parola = "xxx123yyy";
 
-	public BazaDeDate(String host, String port, String numeBazaDate, String utilizator, String parola)
+	public BazaDeDate(String numeBazaDate)
 	{
-		this.host = host;
-		this.port = port;
+		/*this.host = host;
+		this.port = port;*/
 		this.numeBazaDate = numeBazaDate;
-		this.utilizator = utilizator;
-		this.parola = parola;
+		/*this.utilizator = utilizator;
+		this.parola = parola;*/
 	}
 	
 	

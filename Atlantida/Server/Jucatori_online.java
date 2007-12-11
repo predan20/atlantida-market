@@ -4,9 +4,9 @@ import java.sql.Statement;
 
 public class Jucatori_online extends BazaDeDate 
 {
-	public Jucatori_online(String host, String port, String numeBazaDate, String utilizator, String parola)
+	public Jucatori_online(String numeBazaDate)
 	{
-		super(host, port, numeBazaDate, utilizator, parola);
+		super(numeBazaDate);
 	}
 	
 	public int inserareInregistrare(String numeUtilizator)

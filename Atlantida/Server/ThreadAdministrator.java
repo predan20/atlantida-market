@@ -15,7 +15,7 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 	protected ArrayList<String> operatie(ArrayList<String> dateUtilizator)
 	{
 		
-		Administrator admin = new Administrator("89.43.103.108", "3306", "Joc", "root", "xxx123yyy");
+		Administrator admin = new Administrator("Joc");
 		admin.creareConexiune();
 		String propSpeciala = dateUtilizator.get(0);
 		

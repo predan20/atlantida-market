@@ -19,7 +19,7 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 	protected ArrayList<String> operatie(ArrayList<String> dateUtilizator)
 	{
 		ArrayList<String> numeColoane = new ArrayList<String>();
-		Jucator jucator = new Jucator("89.43.103.108", "3306", "Joc", "root", "xxx123yyy");
+		Jucator jucator = new Jucator("Joc");
 		
 		String numeUtilizator = "";
 		String parolaUtilizator = "";
@@ -41,18 +41,18 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 		
 		Inventar_utilizator inventar;
 		
-		inventar = new Inventar_utilizator("89.43.103.108", "3306", "Joc", "root", "xxx123yyy");
+		inventar = new Inventar_utilizator("Joc");
 		inventar.creareConexiune();
 		numeColoane = inventar.getNumeColoane(numeUtilizator);
 		inventar.inchidereConexiune();
 		
-		inventar = new Inventar_utilizator("89.43.103.108", "3306", "Inventare", "root", "xxx123yyy");
+		inventar = new Inventar_utilizator("Inventare");
 		inventar.creareConexiune();
 		inventar.creareInventar(numeUtilizator, numeColoane);
 		inventar.inchidereConexiune();
 		
 		//In cazul in care datele sunt valide instantiem un jucator pe care il vom trimite la client
-		Jucatori_online jucatorOnline = new Jucatori_online("89.43.103.108", "3306", "Joc", "root", "xxx123yyy");
+		Jucatori_online jucatorOnline = new Jucatori_online("Joc");
 		jucatorOnline.creareConexiune();
 		
 		//System.out.println(numarPuncte);

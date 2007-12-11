@@ -12,9 +12,9 @@ import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 public class Inventar_utilizator extends BazaDeDate 
 {	
-	public Inventar_utilizator(String host, String port, String numeBazaDate, String utilizator, String parola)
+	public Inventar_utilizator(String numeBazaDate)
 	{
-		super(host, port, numeBazaDate, utilizator, parola);
+		super(numeBazaDate);
 	}
 	
 	public void creareInventar(String numeUtilizator, ArrayList<String> numeColoane)
