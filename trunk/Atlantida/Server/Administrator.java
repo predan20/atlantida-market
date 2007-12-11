@@ -1,11 +1,12 @@
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 
 public class Administrator extends BazaDeDate
 {
-	public Administrator(String host, String port, String numeBazaDate, String utilizator, String parola)
+	public Administrator(String numeBazaDate)
 	{
-		super(host, port, numeBazaDate, utilizator, parola);
+		super(numeBazaDate);
 	}
 	
 	public boolean inserareInregistrare(String numeElement, String propSpeciala, String formula,int valMaxima, int pret)
@@ -42,6 +43,15 @@ public class Administrator extends BazaDeDate
 			decl.addBatch(comanda);
 			decl.executeBatch();
 			
+			ResultSet rezultat;
+			comanda = "SHOW TABLES FROM Inventare;";
+			rezultat = decl.executeQuery(comanda);
+			int i = 1;
+			while(rezultat.next())
+			{
+				System.out.println(rezultat.getString(i));
+				i++;
+			}
 			return true;
 		}
 		catch (Exception e)

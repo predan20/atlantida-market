@@ -15,7 +15,7 @@ public class ThreadLogout extends ConnectionAbstractThread
 	@Override
 	protected ArrayList<String> operatie(ArrayList<String> dateUtilizator)
 	{
-		Jucator jucator = new Jucator("89.43.103.108", "3306", "Joc", "root", "xxx123yyy");
+		Jucator jucator = new Jucator("Joc");
 		
 		String numeUtilizator = "";
 		String parolaUtilizator = "";
@@ -32,7 +32,7 @@ public class ThreadLogout extends ConnectionAbstractThread
 		if(jucator.validareDate(numeUtilizator, parolaUtilizator))
 		{
 			//In cazul in care datele sunt valide instantiem un jucator pe care il vom trimite la client
-			Jucatori_online jucatorOnline = new Jucatori_online("89.43.103.108", "3306", "Joc", "root", "xxx123yyy");
+			Jucatori_online jucatorOnline = new Jucatori_online("Joc");
 			jucatorOnline.creareConexiune();
 			
 			numarPuncte = jucatorOnline.getNumarPuncte(numeUtilizator);

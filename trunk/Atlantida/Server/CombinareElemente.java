@@ -15,7 +15,7 @@ public class CombinareElemente
 		try
 		{
 			int idParinte = 0;
-			Inventar_utilizator inventarUtilizator = new Inventar_utilizator("89.43.103.108", "3306", "Inventare", "root", "xxx123yyy");
+			Inventar_utilizator inventarUtilizator = new Inventar_utilizator("Inventare");
 
 			inventarUtilizator.creareConexiune();
 			inventarUtilizator.inserareInregistrareVida(numeUtilizator);

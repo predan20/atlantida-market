@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public class Jucator extends BazaDeDate
 {
-	public Jucator(String host, String port, String numeBazaDate, String utilizator, String parola)
+	public Jucator(String numeBazaDate)
 	{
-		super(host, port, numeBazaDate, utilizator, parola);
+		super(numeBazaDate);
 	}
 	
 	public boolean setNumarPuncte(String numarPuncte, String numeUtilizator)
