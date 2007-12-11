@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.mysql.jdbc.ResultSetMetaData;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 
 public class Inventar_utilizator extends BazaDeDate 
@@ -309,7 +308,7 @@ public class Inventar_utilizator extends BazaDeDate
 
 
 	public ArrayList<String> calculProdus(String numeUtilizator, int idParinte,
-			String campuriProdus) 
+			String campuriProdus,String proprSpeciala) 
 	{		
 		try
 		{
@@ -319,27 +318,48 @@ public class Inventar_utilizator extends BazaDeDate
 			String comanda;
 			ArrayList<Float> produs;
 			ArrayList<String> rezultat = new ArrayList<String>();
-		
-			comanda = "select " + campuriProdus +  " from " + numeUtilizator + " WHERE parinte="  + idParinte + ";";
+			String str = "";
 			
-			rezultatProd = decl.executeQuery(comanda);
-			rezultatMD = (ResultSetMetaData)rezultatProd.getMetaData();
-			
-			produs = new ArrayList<Float>(rezultatMD.getColumnCount());
-	
-			for(Float f : produs)
-				f = 1f;
-			
-			while(rezultatProd.next())
+			BufferedReader reader = new BufferedReader(new StringReader(campuriProdus));
+			int i = 1;
+			try 
 			{
-				for (int i= 1; i < produs.size(); i++)
-				{
-					produs.set(i,produs.get(i) * rezultatProd.getFloat(i));
-				}
-			}
-			for(Float f : produs)
-				rezultat.add(f.toString());
-			
+			  while ((str = reader.readLine()) != null) 
+			  {
+				  if (i == 1) 
+				  {
+					comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +";";
+				  }
+				  else
+				  {
+					  comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +" AND " + proprSpeciala + " IS NOT NULL;";
+				  }
+				  rezultatProd = decl.executeQuery(comanda);
+				  rezultatProd.first();
+					//
+				  rezultatMD = (ResultSetMetaData)rezultatProd.getMetaData();
+					
+/*					for(int j=1;i<rezultatMD.getColumnCount();j++)
+					{
+						System.out.println(rezultatProd.getString(j));
+						rezultat.add(rezultatProd.getString(j));
+					}  */
+				  
+					produs = new ArrayList<Float>(rezultatMD.getColumnCount());
+					
+					for(Float f : produs)
+						f = 1f;
+					
+					while(rezultatProd.next())
+					{
+						for (int i= 1; i < produs.size(); i++)
+						{
+							produs.set(i,produs.get(i) * rezultatProd.getFloat(i));
+						}
+					}
+					for(Float f : produs)
+						rezultat.add(f.toString());
+			  }
 			return rezultat;
 		}
 		catch (Exception e)
@@ -421,7 +441,7 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
-	public boolean calculValoareProprSpeciala(String expresie,int idParinte, String numeUtilizator)
+	public boolean calculValoareProprSpeciala(String numeUtilizator, int idParinte, String expresie.String numePropSpec )
 	{
 		EvaluareExpresie evaluareExpresie;
 		ArrayList<String> evalList;
@@ -435,7 +455,7 @@ public class Inventar_utilizator extends BazaDeDate
 		String operatiiSimple = evaluareExpresie.getOperatiiSimple();
 		String campuriProdus = evaluareExpresie.getCampuriProdus();
 		
-		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple,"PROPSPECIALA");
+		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple,numePropSpec);
 		evaluareExpresie.setValoriElemente(evalList,false);
 		
 		this.calculProdus(numeUtilizator, idParinte, campuriProdus);
@@ -443,7 +463,7 @@ public class Inventar_utilizator extends BazaDeDate
 		
 		float valPropSpeciala;
 		valPropSpeciala = evaluareExpresie.calculFormula();
-		this.setCamp(numeUtilizator, idParinte, "Prop_spec", valPropSpeciala);
+		this.setCamp(numeUtilizator, idParinte, numePropSpec, valPropSpeciala);
 		
 //		inventarUtilizator.inchidereConexiune();
 		
