@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -250,39 +253,58 @@ public class Inventar_utilizator extends BazaDeDate
 	}
 	
 	
-	public ArrayList<String> calculProprietati(String numeUtilizator, int idParinte, String operatiiSimple)
+	public ArrayList<String> calculProprietati(String numeUtilizator, int idParinte, String operatiiSimple,String proprSpeciala)
 	{		
 		ArrayList<String> valoareProprietati = new ArrayList<String>();
 
 		ResultSet rezultatSum = null;
 		ResultSetMetaData rezultatSumMetaData;
+		
+		//mai trebuie luat linie cu linie si la produs. in rest pare ok.
 		try
 		{
 			Statement decl = this.conn.createStatement();
 			String comanda = "";
+			String str = "";
 			
-			//Calculare masa, consum, sanatate, protectie, acceleratie, putere 
-			comanda = "select " + operatiiSimple + " from " + numeUtilizator + " WHERE parinte="  + idParinte +" AND parinte IS NOT NULL;";
-			rezultatSum = decl.executeQuery(comanda);
-			rezultatSum.first();
-			//
-			rezultatSumMetaData = (ResultSetMetaData)rezultatSum.getMetaData();
-			
-			for(int i=1;i<rezultatSumMetaData.getColumnCount();i++)
+			BufferedReader reader = new BufferedReader(new StringReader(operatiiSimple));
+			int i = 1;
+			try 
 			{
-				System.out.println(rezultatSum.getString(i));
-				valoareProprietati.add(rezultatSum.getString(i));
+			  while ((str = reader.readLine()) != null) 
+			  {
+				  if (i == 1) 
+				  {
+					comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +";";
+				  }
+				  else
+				  {
+					  comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +" AND " + proprSpeciala + " IS NOT NULL;";
+				  }
+					rezultatSum = decl.executeQuery(comanda);
+					rezultatSum.first();
+					//
+					rezultatSumMetaData = (ResultSetMetaData)rezultatSum.getMetaData();
+					
+					for(int j=1;i<rezultatSumMetaData.getColumnCount();j++)
+					{
+						System.out.println(rezultatSum.getString(j));
+						valoareProprietati.add(rezultatSum.getString(j));
+					}  
+			  }
+			  return valoareProprietati;
+			} 
+			catch(IOException exc) 
+			{
+			  exc.printStackTrace();
+			  return null;
 			}
-			return valoareProprietati;
-			
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			return null;
 		}
-		
-
 	}
 
 
@@ -413,7 +435,7 @@ public class Inventar_utilizator extends BazaDeDate
 		String operatiiSimple = evaluareExpresie.getOperatiiSimple();
 		String campuriProdus = evaluareExpresie.getCampuriProdus();
 		
-		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple);
+		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple,"PROPSPECIALA");
 		evaluareExpresie.setValoriElemente(evalList,false);
 		
 		this.calculProdus(numeUtilizator, idParinte, campuriProdus);
