@@ -16,7 +16,7 @@ public class EvaluareExpresie
 	public EvaluareExpresie(String expresie)
 	{
 		elemente = parseFormulaElement(expresie);
-		elemente = getCampuri(elemente);
+		getCampuri(elemente);
 	}
 	
 	public String getOperatiiSimple()
@@ -75,7 +75,7 @@ public class EvaluareExpresie
 		ArrayList<ElementeAtribuire> ret = new ArrayList<ElementeAtribuire>();
 		
 		Pattern varSt = Pattern.compile("([a-z0-9]+)=");
-		Pattern varDr = Pattern.compile("=([a-zA-Z0-9()]+)([a-zA-Z0-9\\[\\]()]*)");
+		Pattern varDr = Pattern.compile("=([a-zA-Z0-9()]+)([a-zA-Z0-9_\\[\\]()]*)");
 		
 		Matcher mSt = varSt.matcher(expresie);
 
@@ -97,14 +97,20 @@ public class EvaluareExpresie
 		
 		while(mDr.find() && it.hasNext())
 		{
-			varOpField = mDr.group(1);
-			//System.out.println(it.next().getLValue());
+			if(mDr.group(1).contains("Sel"))
+			{
+				varOpField = mDr.group(1).replace("Sel", "") +  mDr.group(2).replaceAll("[\\[\\])]*", "") + ") SEL";
+			}
+			else
+			{
+				varOpField = mDr.group(1);
+			}
+			System.out.println(varOpField);
 			it.next().setRValue(varOpField);
 			expresie = expresie.replace(mDr.group(), "");
-			//it.next();
 		}
 		
-		formula = expresie;
+		formula = expresie.trim();
 		for(ElementeAtribuire e : ret)
 			System.out.println(e.getLValue() + " " + e.getRValue());
 		
@@ -112,11 +118,11 @@ public class EvaluareExpresie
 		return ret;
 	}
 	
-	public ArrayList<ElementeAtribuire> getCampuri(ArrayList<ElementeAtribuire> eleList)
+	public void getCampuri(ArrayList<ElementeAtribuire> eleList)
 	{
 		
-		ArrayList<ElementeAtribuire> multList = new ArrayList<ElementeAtribuire>();
-		
+		ArrayList<String> restrictiiOperatiiSimple = new ArrayList<String>();
+		ArrayList<String> restrictiiProdus = new ArrayList<String>();
 		Iterator<ElementeAtribuire> it = eleList.iterator();
 
 		//generare comanda mysql
@@ -129,26 +135,51 @@ public class EvaluareExpresie
 			e = it.next();
 			if(e.getRValue().contains("MULT") == false)
 			{
-				cmdMySql += ", "+e.getRValue();
+				if(e.getRValue().contains("SEL"))
+				{
+					restrictiiOperatiiSimple.add(e.getRValue());
+				}
+				else
+				{
+					cmdMySql += ", "+e.getRValue();
+				}
 			}
 			else
 			{
-				//posMult = i;
 				field = e.getRValue().substring(e.getRValue().indexOf('(') + 1,e.getRValue().length() -1);
-				campuriProdus += ", " + field;
-				multList.add(new ElementeAtribuire(e.getLValue(),field));
+				if(e.getRValue().contains("SEL"))
+				{
+					restrictiiProdus.add(field);
+				}
+				else
+				{
+					campuriProdus += ", " + field;
+				}
 				
 				it.remove();
 			}
 		}
 		
-		//trebuie tinut cont de mult.. la revenire din apel valori rValue ia valorile returnate
-		//cmdMySql = cmdMySql.replaceFirst(",", "");
+		cmdMySql += "\n";
+		for(String s : restrictiiOperatiiSimple)
+		{
+			cmdMySql +=  ", " + s;
+		}
+		
+		cmdMySql = cmdMySql.replaceFirst(",", "");
 		operatiiSimple = cmdMySql;
+		
+		
 		System.out.println(cmdMySql);
 		
+		campuriProdus += "\n";
+		for(String s : restrictiiProdus)
+		{
+			campuriProdus += ", " + s ;
+		}
 		
-		return eleList;
+		campuriProdus = campuriProdus.replaceFirst(",", "");
+		System.out.println(campuriProdus);
 	}
 	
 	public float calculFormula()
