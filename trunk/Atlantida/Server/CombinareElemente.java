@@ -1,10 +1,3 @@
-import java.util.ArrayList;
-
-import sun.org.mozilla.javascript.internal.EvaluatorException;
-
-import com.mysql.jdbc.Statement;
-
-
 public class CombinareElemente
 {
 	private String[] id = new String[] {};
