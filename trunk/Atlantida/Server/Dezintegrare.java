@@ -18,7 +18,7 @@ public class Dezintegrare extends BazaDeDate
 			Statement decl = this.conn.createStatement();
 			String comanda = "";
 			
-			comanda = "DELETE FROM " + numeUtilizator + "WHERE ID = " + idElement + ";";
+			comanda = "DELETE FROM " + numeUtilizator + " WHERE ID = " + idElement + ";";
 			
 			decl.addBatch(comanda);
 			decl.executeBatch();
@@ -33,7 +33,7 @@ public class Dezintegrare extends BazaDeDate
 	}
 	
 	
-	public boolean dezintegrareElementCompus(String numeUtilizator, int idElement)
+	public boolean dezintegrareElement(String numeUtilizator, int idElement)
 	{
 		try
 		{
@@ -46,26 +46,43 @@ public class Dezintegrare extends BazaDeDate
 			comanda = "SELECT ID, PARINTE FROM " + numeUtilizator + " WHERE PARINTE = " + idElement + ";";
 			
 			rezultat = decl.executeQuery(comanda);
-			rezultat.last();
-			nrElementeSterse = (int)Math.ceil( (double)(0.2 * rezultat.getRow()));
-			System.out.println("Numar elem de sters: " + nrElementeSterse);
-			
-			String cmd = "";
-			
-			while(listaElementeSterse.size() != nrElementeSterse)
+			rezultat.first();
+			int i = 1;
+			while (rezultat.next())
 			{
-				pozElem = (int)Math.round(Math.random() * nrElementeSterse);
+				i++;
+			}
+			System.out.println("Numar randuri: " + i);
+			if (rezultat.last())
+			{
+				nrElementeSterse = (int)Math.ceil((double)(0.2 * rezultat.getRow()));
+				System.out.println("Numar elem de sters: " + nrElementeSterse + " " + rezultat.getRow());
 				
-				if(!listaElementeSterse.contains(pozElem))
+				String cmd = "";
+				
+				while(listaElementeSterse.size() != nrElementeSterse)
 				{
-					listaElementeSterse.add(pozElem);
-					cmd += "OR id = " + pozElem;
+					pozElem = 1 + (int)Math.round(Math.random() * (rezultat.getRow() - 1));
+					
+					if(!listaElementeSterse.contains(pozElem))
+					{
+						listaElementeSterse.add(pozElem);
+						rezultat.absolute(pozElem);
+						cmd += " OR id = " + rezultat.getString(1);
+					}
 				}
+				
+				cmd = cmd.replaceFirst("OR", "");
+				System.out.println(cmd);
+				this.stergereElementCompus(numeUtilizator, cmd);
 			}
 			
-			cmd = cmd.replaceFirst("OR", "");
-			System.out.println(cmd);
-			this.stergereElementCompus(numeUtilizator, cmd);
+			this.dezintegrareElementAtomic(numeUtilizator, idElement);//Se sterge elementul compus
+			
+			comanda = "UPDATE " + numeUtilizator + " SET parinte=-1 WHERE parinte=" + idElement + ";";
+			decl.addBatch(comanda);
+			decl.executeBatch();
+			
 			return true;
 		}
 		catch(Exception e)
@@ -88,6 +105,7 @@ public class Dezintegrare extends BazaDeDate
 				comanda = "DELETE FROM " + numeUtilizator + " WHERE " + cmd + ";";
 				decl.addBatch(comanda);
 				decl.executeBatch();
+				System.out.println("Comanda = " + comanda);
 				
 				cmd = cmd.replaceAll("id", "parinte");
 				comanda = "SELECT id FROM " + numeUtilizator + " WHERE " + cmd + ";";
@@ -97,14 +115,17 @@ public class Dezintegrare extends BazaDeDate
 				{
 					break;
 				}
-			
+				System.out.println("Comanda = " + comanda);
 				cmd = "";
+				
+				rezultat.beforeFirst();
 				while(rezultat.next())
 				{
-					cmd += "OR id = " + rezultat.getString(1);
+					cmd += " OR id = " + rezultat.getString(1);
 				}
 				
 				cmd = cmd.replaceFirst("OR","");
+				System.out.println("Comanda = " + comanda);
 			}
 			return true;
 		}
@@ -122,22 +143,14 @@ public class Dezintegrare extends BazaDeDate
 			Statement decl = this.conn.createStatement();
 			String comanda = "";
 			ResultSet rezultat = null;
-			ArrayList<Integer> elementeMarcatePentruStergere = new ArrayList<Integer>();
 			
-			comanda = "SELECT ID, PARINTE from " + numeUtilizator + " WHERE SANATATE = 0 OR RANDAMENT = 0;";
+			comanda = "SELECT ID from " + numeUtilizator + " WHERE SANATATE = 0 OR RANDAMENT = 0;";
 			
 			rezultat = decl.executeQuery(comanda);
 
 			while(rezultat.next())
-			{
-				if(rezultat.getInt(2) == -1)
-				{
-					this.dezintegrareElementCompus(numeUtilizator, rezultat.getInt(1));
-				}
-				else if(rezultat.getInt(2) == 0)
-				{
-					this.dezintegrareElementAtomic(numeUtilizator, rezultat.getInt(1));
-				}
+			{				
+				this.dezintegrareElement(numeUtilizator, rezultat.getInt(1));
 			}
 			return true;
 		}

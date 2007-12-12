@@ -34,7 +34,9 @@ public class Inventar_utilizator extends BazaDeDate
 			comanda = " CREATE TABLE `" + numeUtilizator + "` (" +
 					  "`ID` SMALLINT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ," + 
 					  "`NUME` VARCHAR( 15 ) NULL ," +
-					  "`PARINTE` SMALLINT( 6 ) NULL ";
+					  "`PARINTE` SMALLINT( 6 ) NULL " +
+					  "`NR_PUNCTE` SMALLINT( 6 ) NULL " +
+					  "`NR_COMP` SMALLINT( 6 ) NULL ";
 			
 			for (int i = 3; i < numeColoane.size(); i++)
 			{
@@ -232,13 +234,16 @@ public class Inventar_utilizator extends BazaDeDate
 			//Calculare valori proprietati speciale
 			numeColoane = this.getNumeColoane(numeUtilizator);
 			
-			//
+			//Calculare numar puncte si numar componente si prop speciale
 			
-			comanda = "UPDATE " + numeUtilizator + " SET nume = 'elemCompus', parinte = -1, masa = " + valoareProprietati.get(0) + 
-					", consum = " + valoareProprietati.get(1) + ", randament = " + valoareProprietati.get(2) + 
-					", rata_inv = " + valoareProprietati.get(3) + ", sanatate = " + valoareProprietati.get(4) +
-					", protectie = " + valoareProprietati.get(5) + ", acceleratie = " + valoareProprietati.get(6) + 
-					", putere = " + valoareProprietati.get(7) + "WHERE id = " + idParinte + ";";
+			
+			
+			
+//			comanda = "UPDATE " + numeUtilizator + " SET nume = 'elemCompus', parinte = -1, masa = " + valoareProprietati.get(0) + 
+//					", consum = " + valoareProprietati.get(1) + ", randament = " + valoareProprietati.get(2) + 
+//					", rata_inv = " + valoareProprietati.get(3) + ", sanatate = " + valoareProprietati.get(4) +
+//					", protectie = " + valoareProprietati.get(5) + ", acceleratie = " + valoareProprietati.get(6) + 
+//					", putere = " + valoareProprietati.get(7) + "WHERE id = " + idParinte + ";";
 		decl.addBatch(comanda);
 		decl.executeBatch();
 		}
@@ -252,7 +257,7 @@ public class Inventar_utilizator extends BazaDeDate
 	}
 	
 	
-	public ArrayList<String> calculProprietati(String numeUtilizator, int idParinte, String operatiiSimple,String proprSpeciala)
+	public ArrayList<String> calculOperatiiSimple(String numeUtilizator, int idParinte, String operatiiSimple,String proprSpeciala)
 	{		
 		ArrayList<String> valoareProprietati = new ArrayList<String>();
 
@@ -461,7 +466,7 @@ public class Inventar_utilizator extends BazaDeDate
 		String operatiiSimple = evaluareExpresie.getOperatiiSimple();
 		String campuriProdus = evaluareExpresie.getCampuriProdus();
 		
-		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple,numePropSpec);
+		evalList = this.calculOperatiiSimple(numeUtilizator, idParinte, operatiiSimple,numePropSpec);
 		evaluareExpresie.setValoriElemente(evalList,false);
 		
 		this.calculProdus(numeUtilizator, idParinte, campuriProdus,numePropSpec);
@@ -476,7 +481,7 @@ public class Inventar_utilizator extends BazaDeDate
 		return true;
 	}
 	
-	public boolean actualizareProprietati(String numeUtilizator,int actualizareSanatate, int actualizareRandament, int actualizareConsum)
+	public boolean actualizareProprietati(String numeUtilizator,float actualizareSanatate, float actualizareRandament, float actualizareConsum)
 	{
 		try
 		{
@@ -485,8 +490,8 @@ public class Inventar_utilizator extends BazaDeDate
 			
 			comanda = "UPDATE " + numeUtilizator + " SET sanatate = sanatate + FLOOR(rata_inv / 3) * " + actualizareSanatate + 
 					  ", randament = randament + FLOOR(rata_inv / 5) * " +actualizareRandament + 
-					  ", consum = consum + FLOOR(rata_inv / 4) * " + actualizareConsum + "';";
-			
+					  ", consum = consum + FLOOR(rata_inv / 4) * " + actualizareConsum + ";";
+						
 			decl.addBatch(comanda);
 			decl.executeBatch();
 			return true;
@@ -498,9 +503,7 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
-	
-	
-	public boolean actualizareProprietatiDinInventare(String numeUtilizator, int actualizareSanatate, int actualizareRandament, int actualizareConsum)
+	public boolean actualizareProprietatiDinInventare(float actualizareSanatate, float actualizareRandament, float actualizareConsum)
 	{
 		try
 		{
@@ -508,13 +511,57 @@ public class Inventar_utilizator extends BazaDeDate
 			String comanda = "";
 			ResultSet rezultat = null;
 			
-			comanda = "SHOW TABLES FROM Inventar_utilizator;";
+			comanda = "SHOW TABLES FROM Inventare;";
 			
 			rezultat = decl.executeQuery(comanda);
 			
 			while(rezultat.next())
 			{
-				this.actualizareProprietati(numeUtilizator, actualizareSanatate, actualizareRandament, actualizareConsum);
+				this.actualizareProprietati(rezultat.getString(1), actualizareSanatate, actualizareRandament, actualizareConsum);
+				this.calculNumarPuncteElem(rezultat.getString(1));
+			}
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean calculNumarPuncteElem(String numeUtilizator)
+	{
+		try
+		{
+			System.out.println("Calcl numar puncte elem");
+			float numarPuncte = 0, sumaPropSpeciale = 0;
+			Statement decl = this.conn.createStatement();
+			Statement update = this.conn.createStatement(); 
+			String comanda = "";
+			ResultSet rezultat = null;
+			
+			comanda = "SELECT * FROM " + numeUtilizator + " WHERE parinte=-1;";
+			rezultat = decl.executeQuery(comanda);
+			
+			while (rezultat.next())
+			{
+				for (int i = (rezultat.findColumn("SANATATE") + 1); i <= rezultat.getMetaData().getColumnCount(); i++)
+				{
+					sumaPropSpeciale += rezultat.getFloat(i);
+				}
+				
+				numarPuncte = (rezultat.getFloat("SANATATE") - rezultat.getFloat("MASA") - rezultat.getFloat("CONSUM") + 
+						sumaPropSpeciale) * rezultat.getFloat("RANDAMENT") * rezultat.getFloat("RATA_INV") * 
+						rezultat.getFloat("NR_COMP") * 100;
+				
+				System.out.println(rezultat.getFloat("SANATATE")+" "+rezultat.getFloat("MASA")+" "+rezultat.getFloat("CONSUM")+" "+ 
+						rezultat.getFloat("RANDAMENT")+" "+rezultat.getFloat("RATA_INV")+" "+ 
+						rezultat.getFloat("NR_COMP"));
+				
+				System.out.println("Numar puncte: " + numarPuncte);
+				comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + rezultat.getShort("ID") + ";";
+				update.addBatch(comanda);
+				update.executeBatch();
 			}
 			return true;
 		}
