@@ -29,7 +29,6 @@ public class Jucator extends BazaDeDate
 		}
 	}
 	
-	
 	public ArrayList<String> getNumeColoane(String numeUtilizator)
 	{
 		ArrayList<String> numeColoane = new ArrayList<String>();

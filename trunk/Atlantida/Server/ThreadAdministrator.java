@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
+//Ar mai trebui adaugata facilitatea de modificare a proprietatilor unei coloane: formula, pretul si valoarea maxima
+//a prop speciale
 
 public class ThreadAdministrator extends ConnectionAbstractThread
 {
@@ -14,13 +16,46 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 	@Override
 	protected ArrayList<String> operatie(ArrayList<String> dateUtilizator)
 	{
+		String durataCiclu = dateUtilizator.get(0);          //Durata unui ciclu exprimata in minute
+		String  capitalInitial = dateUtilizator.get(1);      //Capital initial de puncte
+		String actualizareSanatate = dateUtilizator.get(2);  //Valoare in puncte cu care se actualizeaza sanatatea
+		String actualizareRandament = dateUtilizator.get(3); //Valoare in puncte cu care se actualizeaza randamentul
+		String actualizareConsum = dateUtilizator.get(4);    //Valoare in puncte cu care se actualizeaza consumul
+		String durataLicitatieSimpla = dateUtilizator.get(5);//Durata in timp a licitatiei fara alti jucatori
+		String durataLicitatieComplexa = dateUtilizator.get(6);//Durata in timp a licitatiei cu alti jucatori
+		String numeElement = dateUtilizator.get(7);           //Nume element nou
+		String propSpeciala = dateUtilizator.get(8);         //Numele proprietatii speciale 
+		String formula = dateUtilizator.get(9);              //Formula de calcul a proprietatii speciale 
+		String valMaxima = dateUtilizator.get(10);            //Valoarea maxima a proprietatii speciale 
+		String pretElementAtomic = dateUtilizator.get(11);    //Pretul elementului atomic
+		
+		ArrayList<String> parametriAdministare = new ArrayList<String>(); //Primii 7 parametri
+		for (int i = 0; i < 7; i++)
+		{
+			parametriAdministare.add(dateUtilizator.get(i));
+		}
 		
 		Administrator admin = new Administrator("Joc");
 		admin.creareConexiune();
-		String propSpeciala = dateUtilizator.get(0);
+		admin.setareParametriAdministrare(parametriAdministare);
 		
-		admin.actualizareInventarUtilizator(propSpeciala);
-		admin.inchidereConexiune();
+		if ((!propSpeciala.trim().equals(""))&&(!formula.trim().equals(""))&&(!valMaxima.trim().equals(""))&&(!pretElementAtomic.trim().equals("")))
+		{
+			System.out.println("Intra!!!!");
+			admin.inserareInregistrare(numeElement, propSpeciala, formula, Integer.parseInt(valMaxima), Integer.parseInt(pretElementAtomic));
+			admin.actualizareInventarUtilizator(propSpeciala);
+			admin.inchidereConexiune();
+			
+			admin = new Administrator("Inventare");
+			admin.creareConexiune();
+			admin.actalizareInventare(propSpeciala);
+			admin.inchidereConexiune();
+		}
+		else
+		{
+			admin.inchidereConexiune();
+		}
+		
 		
 		return dateUtilizator;
 	}
