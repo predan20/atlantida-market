@@ -4,6 +4,8 @@ import javax.net.ssl.SSLSocket;
 
 //Ar mai trebui adaugata facilitatea de modificare a proprietatilor unei coloane: formula, pretul si valoarea maxima
 //a prop speciale
+//Trebuie facut la administrator cand trimite valorile pt actualizare sa calculam modificarea: ex sanatatea scade cu 1
+//la fiecare RI/3 cicluri
 
 public class ThreadAdministrator extends ConnectionAbstractThread
 {
@@ -16,6 +18,8 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 	@Override
 	protected ArrayList<String> operatie(ArrayList<String> dateUtilizator)
 	{
+		Dezintegrare dezintegrare = new Dezintegrare("Inventare");
+		
 		String durataCiclu = dateUtilizator.get(0);          //Durata unui ciclu exprimata in minute
 		String  capitalInitial = dateUtilizator.get(1);      //Capital initial de puncte
 		String actualizareSanatate = dateUtilizator.get(2);  //Valoare in puncte cu care se actualizeaza sanatatea
@@ -35,7 +39,7 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 			parametriAdministare.add(dateUtilizator.get(i));
 		}
 		
-		Administrator admin = new Administrator("Joc");
+		/*Administrator admin = new Administrator("Joc");
 		admin.creareConexiune();
 		admin.setareParametriAdministrare(parametriAdministare);
 		
@@ -48,15 +52,18 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 			
 			admin = new Administrator("Inventare");
 			admin.creareConexiune();
-			admin.actalizareInventare(propSpeciala);
+			
+			admin.actualizareInventare(propSpeciala);
 			admin.inchidereConexiune();
 		}
 		else
 		{
 			admin.inchidereConexiune();
 		}
-		
-		
+		*/
+		dezintegrare.creareConexiune();
+		dezintegrare.verificareDezintegrare("ionEla12");
+		dezintegrare.inchidereConexiune();
 		return dateUtilizator;
 	}
 

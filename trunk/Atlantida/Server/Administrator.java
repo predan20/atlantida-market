@@ -53,7 +53,7 @@ public class Administrator extends BazaDeDate
 		}
 	}
 	
-	public boolean actalizareInventare(String numeColoanaNoua)
+	public boolean actualizareInventare(String numeColoanaNoua)
 	{
 		try
 		{
