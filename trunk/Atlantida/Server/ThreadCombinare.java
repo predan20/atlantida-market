@@ -2,6 +2,11 @@ import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
+<<<<<<< .mine
+
+
+=======
+>>>>>>> .r19
 public class ThreadCombinare extends ConnectionAbstractThread
 {
 	public ThreadCombinare(SSLSocket socket)
