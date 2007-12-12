@@ -352,7 +352,7 @@ public class Inventar_utilizator extends BazaDeDate
 					
 					while(rezultatProd.next())
 					{
-						for (int i= 1; i < produs.size(); i++)
+						for (i= 1; i < produs.size(); i++)
 						{
 							produs.set(i,produs.get(i) * rezultatProd.getFloat(i));
 						}
@@ -360,7 +360,13 @@ public class Inventar_utilizator extends BazaDeDate
 					for(Float f : produs)
 						rezultat.add(f.toString());
 			  }
-			return rezultat;
+			  return rezultat;
+			}
+			catch(IOException exc) 
+			{
+			  exc.printStackTrace();
+			  return null;
+			}
 		}
 		catch (Exception e)
 		{
@@ -441,7 +447,7 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
-	public boolean calculValoareProprSpeciala(String numeUtilizator, int idParinte, String expresie.String numePropSpec )
+	public boolean calculValoareProprSpeciala(String numeUtilizator, int idParinte, String expresie, String numePropSpec )
 	{
 		EvaluareExpresie evaluareExpresie;
 		ArrayList<String> evalList;
@@ -458,7 +464,7 @@ public class Inventar_utilizator extends BazaDeDate
 		evalList = this.calculProprietati(numeUtilizator, idParinte, operatiiSimple,numePropSpec);
 		evaluareExpresie.setValoriElemente(evalList,false);
 		
-		this.calculProdus(numeUtilizator, idParinte, campuriProdus);
+		this.calculProdus(numeUtilizator, idParinte, campuriProdus,numePropSpec);
 		evaluareExpresie.setValoriElemente(evalList, true);
 		
 		float valPropSpeciala;
