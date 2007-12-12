@@ -475,4 +475,53 @@ public class Inventar_utilizator extends BazaDeDate
 		
 		return true;
 	}
+	
+	public boolean actualizareProprietati(String numeUtilizator,int actualizareSanatate, int actualizareRandament, int actualizareConsum)
+	{
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			String comanda = "";
+			
+			comanda = "UPDATE " + numeUtilizator + " SET sanatate = sanatate + FLOOR(rata_inv / 3) * " + actualizareSanatate + 
+					  ", randament = randament + FLOOR(rata_inv / 5) * " +actualizareRandament + 
+					  ", consum = consum + FLOOR(rata_inv / 4) * " + actualizareConsum + "';";
+			
+			decl.addBatch(comanda);
+			decl.executeBatch();
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	
+	public boolean actualizareProprietatiDinInventare(String numeUtilizator, int actualizareSanatate, int actualizareRandament, int actualizareConsum)
+	{
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			String comanda = "";
+			ResultSet rezultat = null;
+			
+			comanda = "SHOW TABLES FROM Inventar_utilizator;";
+			
+			rezultat = decl.executeQuery(comanda);
+			
+			while(rezultat.next())
+			{
+				this.actualizareProprietati(numeUtilizator, actualizareSanatate, actualizareRandament, actualizareConsum);
+			}
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

@@ -70,7 +70,7 @@ public class Jucator extends BazaDeDate
 			{
 				String comanda = "";
 				comanda = "INSERT INTO Jucatori (ID, UTILIZATOR, PAROLA, EMAIL, NR_CICLURI, TIP_JUCATOR, NR_PUNCTE) " +
-						"VALUES(0, '" + numeUtilizator + "','" + parolaUtilizator + "','" + emailUtilizator + "', 0, 0," + nrPuncte + ");";
+						"VALUES(0, '" + numeUtilizator + "','" + parolaUtilizator + "','" + emailUtilizator + "', -1, 0," + nrPuncte + ");";
 				
 				decl.addBatch(comanda);
 				decl.executeBatch();
