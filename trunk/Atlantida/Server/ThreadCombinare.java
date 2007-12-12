@@ -2,9 +2,6 @@ import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
-
 public class ThreadCombinare extends ConnectionAbstractThread
 {
 	public ThreadCombinare(SSLSocket socket)
