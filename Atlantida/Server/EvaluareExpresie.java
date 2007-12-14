@@ -43,31 +43,31 @@ public class EvaluareExpresie
 	
 	public void setValoriElemente(ArrayList<String> evalList,boolean produs)
 	{
-		int i = 1;
-	if(produs)
-	{
-		for(ElementeAtribuire e : elemente)
+		int i = 0;
+		if(produs)
 		{
-			
-			if(e.getRValue().contains("MULT") == false)
+
+			for(ElementeAtribuire e : elemente)
 			{
-				e.setRValue(evalList.get(i));
+				if(e.getRValue().contains("MULT"))
+				{
+					e.setRValue(evalList.get(i));
+				}
+				i++;
 			}
-			i++;
 		}
-	}
-	else
-	{
-		for(ElementeAtribuire e : elemente)
+		else
 		{
-			
-			if(e.getRValue().contains("MULT"))
-			{
-				e.setRValue(evalList.get(i));
+
+			for(ElementeAtribuire e : elemente)
+			{		
+				if(e.getRValue().contains("MULT") == false)
+				{
+					e.setRValue(evalList.get(i));
+				}
+				i++;
 			}
-			i++;
 		}
-	}
 		
 	}
 	public ArrayList<ElementeAtribuire> parseFormulaElement(String expresie)
@@ -75,7 +75,7 @@ public class EvaluareExpresie
 		ArrayList<ElementeAtribuire> ret = new ArrayList<ElementeAtribuire>();
 		
 		Pattern varSt = Pattern.compile("([a-z0-9]+)=");
-		Pattern varDr = Pattern.compile("=([a-zA-Z0-9()]+)([a-zA-Z0-9_\\[\\]()]*)");
+		Pattern varDr = Pattern.compile("=([a-zA-Z0-9()]+)([a-zA-Z0-9_\\[\\]()]*)([ ]+)");
 		
 		Matcher mSt = varSt.matcher(expresie);
 
@@ -105,16 +105,12 @@ public class EvaluareExpresie
 			{
 				varOpField = mDr.group(1);
 			}
-			System.out.println(varOpField);
 			it.next().setRValue(varOpField);
 			expresie = expresie.replace(mDr.group(), "");
 		}
 		
 		formula = expresie.trim();
-		for(ElementeAtribuire e : ret)
-			System.out.println(e.getLValue() + " " + e.getRValue());
 		
-		System.out.println("Formula: " + formula);
 		return ret;
 	}
 	
@@ -155,8 +151,6 @@ public class EvaluareExpresie
 				{
 					campuriProdus += ", " + field;
 				}
-				
-				it.remove();
 			}
 		}
 		
@@ -169,9 +163,6 @@ public class EvaluareExpresie
 		cmdMySql = cmdMySql.replaceFirst(",", "");
 		operatiiSimple = cmdMySql;
 		
-		
-		System.out.println(cmdMySql);
-		
 		campuriProdus += "\n";
 		for(String s : restrictiiProdus)
 		{
@@ -179,12 +170,10 @@ public class EvaluareExpresie
 		}
 		
 		campuriProdus = campuriProdus.replaceFirst(",", "");
-		System.out.println(campuriProdus);
 	}
 	
 	public float calculFormula()
 	{
-		ArrayList<ElementeAtribuire> eleList = new ArrayList<ElementeAtribuire>();
 		JEP eval = new JEP();
 		eval.initSymTab();
 		
@@ -194,14 +183,11 @@ public class EvaluareExpresie
 		eval.setAllowAssignment(true);
 		
 		
-		for(ElementeAtribuire e : eleList)
+		for(ElementeAtribuire e : elemente)
 		{
 			eval.addVariable(e.getLValue(), Double.parseDouble(e.getRValue()));
-			System.out.println(eval.getVar(e.getLValue()));
 		}
 		eval.parseExpression(this.formula);
-		//eval.getValue();
-		System.out.println("Result: " + eval.getValue());
 		
 		return (float)(eval.getValue());
 	}

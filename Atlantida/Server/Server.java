@@ -122,18 +122,30 @@ public class Server extends Thread
 		Server server3002 = new Server(3002,"ThreadInregistrare");
 		Server server3003 = new Server(3003,"ThreadCombinare");
 		Server server3004 = new Server(3004,"ThreadAdministrator");
+		Server server3005 = new Server(3005,"ThreadVanzare");
+		Server server3006 = new Server(3006,"ThreadCumparare");
 		
 		server3000.start();
 		server3001.start();
 		server3002.start();
 		server3003.start();
 		server3004.start();
+		server3005.start();
+		server3006.start();
 		
 		server3000.listenTo();
 		server3001.listenTo();
 		server3002.listenTo();
 		server3003.listenTo();
 		server3004.listenTo();
+		server3005.listenTo();
+		server3006.listenTo();
+		
+		//Apel la un anumit interval de timp pentru functia de actualizare a parametrilor elementelor
+		//TREBUIE luata din baza de date durata unui ciclu, momentan este setata manual la 30 de secunde 
+//		System.out.println("About to schedule task.");
+//		new CeasServer(30);
+//		System.out.println("Task scheduled.");
 		
 		while(true)
 		{
@@ -142,6 +154,8 @@ public class Server extends Thread
 			server3002.listenTo();
 			server3003.listenTo();
 			server3004.listenTo();
+			server3005.listenTo();
+			server3006.listenTo();
 		}
 	}
 }

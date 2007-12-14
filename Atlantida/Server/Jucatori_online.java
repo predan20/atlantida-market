@@ -54,6 +54,25 @@ public class Jucatori_online extends BazaDeDate
 		}
 	}
 	
+	public boolean actualizareCapitalJucator(String numeUtilizator, float valoareElement, String operator)
+	{
+		try
+		{
+			Statement decl = this.conn.createStatement(); 
+			String comanda = "";
+		
+			comanda = "UPDATE Jucatori_online " + "SET nr_puncte= nr_puncte " + operator + valoareElement + " WHERE utilizator='" + numeUtilizator+ "';";
+			decl.addBatch(comanda);
+			decl.executeBatch();
+			return true;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public boolean stergereInregistrare(String numeUtilizator)
 	{
 		try

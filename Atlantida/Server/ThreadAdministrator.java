@@ -65,9 +65,6 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 //		dezintegrare.verificareDezintegrare("ionEla12");
 //		dezintegrare.inchidereConexiune();
 		
-		Inventar_utilizator inventar_utilizator = new Inventar_utilizator("Inventare");
-		inventar_utilizator.creareConexiune();
-		inventar_utilizator.actualizareProprietatiDinInventare((float)-0.1, (float)-0.1, (float)0.1);
 		return dateUtilizator;
 	}
 
