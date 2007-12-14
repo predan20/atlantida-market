@@ -19,23 +19,28 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 	protected ArrayList<String> operatie(ArrayList<String> dateUtilizator)
 	{
 		ArrayList<String> numeColoane = new ArrayList<String>();
-		Jucator jucator = new Jucator("Joc");
+		
 		
 		String numeUtilizator = "";
 		String parolaUtilizator = "";
 		String emailUtilizator = "";
 		
-		String numarPuncte = "300";
+		String numarPuncte = "";
 		
 		//Numele si parola vor fi trimise de client, intotdeauna, pe primul si respectiv al doilea rand
 		numeUtilizator = dateUtilizator.get(0);
 		parolaUtilizator = dateUtilizator.get(1);
 		emailUtilizator = dateUtilizator.get(2);
 		
-		//Creem conexiunea cu baza de date
-		jucator.creareConexiune();
+		//Conectare la baza de date Administrare pentru a lua numarul initial de puncte
+		Administrator admin = new Administrator("Joc");
+		admin.creareConexiune();
+		numarPuncte = admin.getProprietateInitiala("capital_initial");
+		admin.inchidereConexiune();
 		
 		//Adaugam date in tabela Jucatori
+		Jucator jucator = new Jucator("Joc");
+		jucator.creareConexiune();
 		jucator.inserareInregistrare(numeUtilizator, parolaUtilizator, emailUtilizator, numarPuncte);
 		jucator.inchidereConexiune();
 		
@@ -43,7 +48,7 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 		
 		inventar = new Inventar_utilizator("Joc");
 		inventar.creareConexiune();
-		numeColoane = inventar.getNumeColoane(numeUtilizator);
+		numeColoane = inventar.getNumeColoane("Inventar_utilizator");
 		inventar.inchidereConexiune();
 		
 		inventar = new Inventar_utilizator("Inventare");
@@ -57,14 +62,13 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 		
 		//System.out.println(numarPuncte);
 		jucatorOnline.inserareInregistrare(numeUtilizator);
-		
 		jucatorOnline.inchidereConexiune();
 		
-		this.server.scriereDate(dateUtilizator);
 		System.out.println("Inregistare: " + numeUtilizator + " -> " + parolaUtilizator);
+		//ADAUGAM in numeColoane, pe ultimul rand si numar de puncte initial al jucatorului
+		numeColoane.add(numarPuncte);
 
-
-		return dateUtilizator;
+		return numeColoane;
 
 	}
 

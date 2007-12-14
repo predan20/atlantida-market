@@ -34,13 +34,14 @@ public class Inventar_utilizator extends BazaDeDate
 			comanda = " CREATE TABLE `" + numeUtilizator + "` (" +
 					  "`ID` SMALLINT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ," + 
 					  "`NUME` VARCHAR( 15 ) NULL ," +
-					  "`PARINTE` SMALLINT( 6 ) NULL " +
-					  "`NR_PUNCTE` SMALLINT( 6 ) NULL " +
+					  "`PARINTE` SMALLINT( 6 ) NULL, " +
+					  "`NR_PUNCTE` SMALLINT( 6 ) NULL, " +
 					  "`NR_COMP` SMALLINT( 6 ) NULL ";
+			int start = numeColoane.indexOf("MASA");
 			
-			for (int i = 3; i < numeColoane.size(); i++)
+			for (int i = start; i < numeColoane.size(); i++)
 			{
-				comanda += ",`" + numeColoane.get(i) + "` FLOAT UNSIGNED NULL";
+				comanda += ",`" + numeColoane.get(i) + "` FLOAT NULL";
 					  
 			}
 			comanda += ") ENGINE = MYISAM CHARACTER SET latin1 COLLATE latin1_swedish_ci";
@@ -48,7 +49,6 @@ public class Inventar_utilizator extends BazaDeDate
 			
 			decl.addBatch(comanda);
 			decl.executeBatch();
-			System.out.println(comanda);
 		}
 		catch (Exception e)
 		{
@@ -57,7 +57,7 @@ public class Inventar_utilizator extends BazaDeDate
 	}
 
 	public boolean inserareInregistrare(String numeUtilizator, String numeElement, String proprietatiElement)
-	{	
+	{	//Trebuie modificata dupa noile date
 		Statement decl = null;
 		
 		try
@@ -125,28 +125,7 @@ public class Inventar_utilizator extends BazaDeDate
 			return -1;
 		}
 	}
-	
-	
-	public boolean stergereInregistrare(String numeUtilizator, String numeElement)
-	{
-		try
-		{
-			Statement decl = this.conn.createStatement();
-			String comanda = "";
-			
-			comanda = "DELETE FROM " + numeUtilizator + " WHERE nume='" + numeElement + "';";
-			
-			decl.addBatch(comanda);
-			decl.executeBatch();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
+
 	
 	public ArrayList<String> getInventar(String numeUtilizator, ArrayList<String> numeColoane)
 	{
@@ -169,7 +148,7 @@ public class Inventar_utilizator extends BazaDeDate
 				for (int i = 0; i < numeColoane.size(); i++)
 				{
 					System.out.println(rezultat.getString(i+1));
-					element += numeColoane.get(i) + " - " + rezultat.getString(i+1) + " ";
+					element += rezultat.getString(i+1) + " ";
 				}
 				
 				inventar.add(element);
@@ -184,15 +163,20 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 
-	public boolean calculareProprietati(String numeUtilizator, int idParinte)
+	public boolean calculareProprietati(String numeUtilizator, int idParinte, int nrComponente)
 	{		
 		ArrayList<Float> valoareProprietati = new ArrayList<Float>();
 		ArrayList<String> numeColoane = new ArrayList<String>();
 		ArrayList<String> formule = new ArrayList<String>();
+		Elemente_atomice elemAtomice = new Elemente_atomice("Joc");
 		
 		ResultSet rezultatSum = null, rezultatMin = null, rezultatProd = null;
 		float masa = 0, consum = 0, randament = 1, rataInvechire = 0, sanatate = 0;
 		int parinte = 0;
+		
+		elemAtomice.creareConexiune();
+		formule = elemAtomice.getFormulePropSpeciale();
+		elemAtomice.inchidereConexiune();
 		
 		try
 		{
@@ -235,17 +219,23 @@ public class Inventar_utilizator extends BazaDeDate
 			numeColoane = this.getNumeColoane(numeUtilizator);
 			
 			//Calculare numar puncte si numar componente si prop speciale
+			int start = numeColoane.indexOf("SANATATE") + 1;
+			for (int i = start; i < numeColoane.size(); i++)
+			{
+				valoareProprietati.add(calculValoareProprSpeciala(numeUtilizator, idParinte, formule.get(i - start), numeColoane.get(i)));
+			}
 			
+			comanda = "UPDATE " + numeUtilizator + " SET nume = 'elemCompus', parinte = -1, nr_comp = " + nrComponente + ", ";
+			start = numeColoane.indexOf("NR_COMP") + 1;
+			for(int i = start; i< numeColoane.size(); i++)
+			{
+				comanda += numeColoane.get(i) + " = " + valoareProprietati.get(i - start)+ ", ";
+			}
+			comanda = comanda.subSequence(0, comanda.length() - 2) + " WHERE id  = " + idParinte + ";";
+			decl.addBatch(comanda);
+			decl.executeBatch();
 			
-			
-			
-//			comanda = "UPDATE " + numeUtilizator + " SET nume = 'elemCompus', parinte = -1, masa = " + valoareProprietati.get(0) + 
-//					", consum = " + valoareProprietati.get(1) + ", randament = " + valoareProprietati.get(2) + 
-//					", rata_inv = " + valoareProprietati.get(3) + ", sanatate = " + valoareProprietati.get(4) +
-//					", protectie = " + valoareProprietati.get(5) + ", acceleratie = " + valoareProprietati.get(6) + 
-//					", putere = " + valoareProprietati.get(7) + "WHERE id = " + idParinte + ";";
-		decl.addBatch(comanda);
-		decl.executeBatch();
+			this.calculNumarPuncteElem(numeUtilizator);
 		}
 		catch (Exception e)
 		{
@@ -255,6 +245,8 @@ public class Inventar_utilizator extends BazaDeDate
 		
 		return true;
 	}
+	
+	
 	
 	
 	public ArrayList<String> calculOperatiiSimple(String numeUtilizator, int idParinte, String operatiiSimple,String proprSpeciala)
@@ -285,14 +277,15 @@ public class Inventar_utilizator extends BazaDeDate
 				  {
 					  comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +" AND " + proprSpeciala + " IS NOT NULL;";
 				  }
+				  
+				  System.out.println("OpSimple: " + comanda);
 					rezultatSum = decl.executeQuery(comanda);
 					rezultatSum.first();
 					//
 					rezultatSumMetaData = (ResultSetMetaData)rezultatSum.getMetaData();
 					
-					for(int j=1;i<rezultatSumMetaData.getColumnCount();j++)
+					for(int j=1;j<=rezultatSumMetaData.getColumnCount();j++)
 					{
-						System.out.println(rezultatSum.getString(j));
 						valoareProprietati.add(rezultatSum.getString(j));
 					}  
 			  }
@@ -324,7 +317,7 @@ public class Inventar_utilizator extends BazaDeDate
 			ArrayList<Float> produs;
 			ArrayList<String> rezultat = new ArrayList<String>();
 			String str = "";
-			
+			//campuriProdus = campuriProdus.replaceAll(" ", "\n");
 			BufferedReader reader = new BufferedReader(new StringReader(campuriProdus));
 			int i = 1;
 			try 
@@ -339,9 +332,8 @@ public class Inventar_utilizator extends BazaDeDate
 				  {
 					  comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +" AND " + proprSpeciala + " IS NOT NULL;";
 				  }
+				  
 				  rezultatProd = decl.executeQuery(comanda);
-				  rezultatProd.first();
-					//
 				  rezultatMD = (ResultSetMetaData)rezultatProd.getMetaData();
 					
 /*					for(int j=1;i<rezultatMD.getColumnCount();j++)
@@ -350,20 +342,23 @@ public class Inventar_utilizator extends BazaDeDate
 						rezultat.add(rezultatProd.getString(j));
 					}  */
 				  
-					produs = new ArrayList<Float>(rezultatMD.getColumnCount());
-					
-					for(Float f : produs)
-						f = 1f;
-					
+					produs = new ArrayList<Float>();
+					for(i = 0; i < rezultatMD.getColumnCount(); i++)
+					{
+						produs.add(1f);
+					}
+					rezultatProd.beforeFirst();
 					while(rezultatProd.next())
 					{
-						for (i= 1; i < produs.size(); i++)
+						for (i= 0; i < produs.size(); i++)
 						{
-							produs.set(i,produs.get(i) * rezultatProd.getFloat(i));
+							produs.set(i,produs.get(i) * rezultatProd.getFloat(i+1));
 						}
 					}
 					for(Float f : produs)
+					{
 						rezultat.add(f.toString());
+					}
 			  }
 			  return rezultat;
 			}
@@ -382,7 +377,7 @@ public class Inventar_utilizator extends BazaDeDate
 	}
 
 	
-	public ArrayList<String> getNumeColoane(String numeUtilizator)
+	public ArrayList<String> getNumeColoane(String numeTabela)
 	{
 		ArrayList<String> numeColoane = new ArrayList<String>();
 		ResultSet rezultat;
@@ -390,7 +385,7 @@ public class Inventar_utilizator extends BazaDeDate
 		{
 			Statement decl = this.conn.createStatement();
 			int i = 1;
-			rezultat = decl.executeQuery("SHOW COLUMNS FROM Inventar_utilizator;");
+			rezultat = decl.executeQuery("SHOW COLUMNS FROM " + numeTabela + ";");
 			
 			while (rezultat.next())
 			{
@@ -452,10 +447,10 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
-	public boolean calculValoareProprSpeciala(String numeUtilizator, int idParinte, String expresie, String numePropSpec )
+	public float calculValoareProprSpeciala(String numeUtilizator, int idParinte, String expresie, String numePropSpec )
 	{
 		EvaluareExpresie evaluareExpresie;
-		ArrayList<String> evalList;
+		ArrayList<String> evalList = null;
 //		Inventar_utilizator inventarUtilizator = new Inventar_utilizator("89.43.103.108", "3306", "Inventare", "root", "xxx123yyy");
 //
 //		inventarUtilizator.creareConexiune();
@@ -466,19 +461,27 @@ public class Inventar_utilizator extends BazaDeDate
 		String operatiiSimple = evaluareExpresie.getOperatiiSimple();
 		String campuriProdus = evaluareExpresie.getCampuriProdus();
 		
-		evalList = this.calculOperatiiSimple(numeUtilizator, idParinte, operatiiSimple,numePropSpec);
-		evaluareExpresie.setValoriElemente(evalList,false);
+		if(!operatiiSimple.trim().equals(""))
+		{
+			evalList = this.calculOperatiiSimple(numeUtilizator, idParinte, operatiiSimple,numePropSpec);
+			evaluareExpresie.setValoriElemente(evalList,false);
+
+		}
+
+		if(!campuriProdus.trim().equals(""))
+		{
+			evalList = this.calculProdus(numeUtilizator, idParinte, campuriProdus,numePropSpec);
+			evaluareExpresie.setValoriElemente(evalList, true);
+		}
 		
-		this.calculProdus(numeUtilizator, idParinte, campuriProdus,numePropSpec);
-		evaluareExpresie.setValoriElemente(evalList, true);
 		
 		float valPropSpeciala;
 		valPropSpeciala = evaluareExpresie.calculFormula();
-		this.setCamp(numeUtilizator, idParinte, numePropSpec, valPropSpeciala);
+		//this.setCamp(numeUtilizator, idParinte, numePropSpec, valPropSpeciala);
 		
 //		inventarUtilizator.inchidereConexiune();
 		
-		return true;
+		return valPropSpeciala;
 	}
 	
 	public boolean actualizareProprietati(String numeUtilizator,float actualizareSanatate, float actualizareRandament, float actualizareConsum)
@@ -488,9 +491,9 @@ public class Inventar_utilizator extends BazaDeDate
 			Statement decl = this.conn.createStatement();
 			String comanda = "";
 			
-			comanda = "UPDATE " + numeUtilizator + " SET sanatate = sanatate + FLOOR(rata_inv / 3) * " + actualizareSanatate + 
-					  ", randament = randament + FLOOR(rata_inv / 5) * " +actualizareRandament + 
-					  ", consum = consum + FLOOR(rata_inv / 4) * " + actualizareConsum + ";";
+			comanda = "UPDATE " + numeUtilizator + " SET sanatate = sanatate + rata_inv / 3 * " + actualizareSanatate + 
+					  ", randament = randament + rata_inv / 5 * " + actualizareRandament + 
+					  ", consum = consum + rata_inv / 4 * " + actualizareConsum + " WHERE parinte = -1;";
 						
 			decl.addBatch(comanda);
 			decl.executeBatch();
@@ -533,7 +536,6 @@ public class Inventar_utilizator extends BazaDeDate
 	{
 		try
 		{
-			System.out.println("Calcl numar puncte elem");
 			float numarPuncte = 0, sumaPropSpeciale = 0;
 			Statement decl = this.conn.createStatement();
 			Statement update = this.conn.createStatement(); 
@@ -553,12 +555,7 @@ public class Inventar_utilizator extends BazaDeDate
 				numarPuncte = (rezultat.getFloat("SANATATE") - rezultat.getFloat("MASA") - rezultat.getFloat("CONSUM") + 
 						sumaPropSpeciale) * rezultat.getFloat("RANDAMENT") * rezultat.getFloat("RATA_INV") * 
 						rezultat.getFloat("NR_COMP") * 100;
-				
-				System.out.println(rezultat.getFloat("SANATATE")+" "+rezultat.getFloat("MASA")+" "+rezultat.getFloat("CONSUM")+" "+ 
-						rezultat.getFloat("RANDAMENT")+" "+rezultat.getFloat("RATA_INV")+" "+ 
-						rezultat.getFloat("NR_COMP"));
-				
-				System.out.println("Numar puncte: " + numarPuncte);
+
 				comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + rezultat.getShort("ID") + ";";
 				update.addBatch(comanda);
 				update.executeBatch();

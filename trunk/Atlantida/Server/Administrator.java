@@ -10,27 +10,6 @@ public class Administrator extends BazaDeDate
 		super(numeBazaDate);
 	}
 	
-	public boolean inserareInregistrare(String numeElement, String propSpeciala, String formula,int valMaxima, int pret)
-	{
-			try
-			{
-				Statement decl = this.conn.createStatement();
-				
-				String comanda = "";
-				comanda = "INSERT INTO Elemente_atomice (ID, NUME, PROP_SPEC, FORMULA, VAL_MAX, PRET) " +
-						"VALUES(0, '" + numeElement + "','" + propSpeciala + "','" + formula + "'," + valMaxima + "," + pret + ");";
-				decl.addBatch(comanda);
-				decl.executeBatch();
-				return true;
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				return false;
-			}
-		
-	}
-	
 	public boolean actualizareInventarUtilizator(String numeColoanaNoua)
 	{
 		try
@@ -150,4 +129,25 @@ public class Administrator extends BazaDeDate
 			return null;
 		}
 	}	
+	
+	public String getProprietateInitiala(String numeProprietate)
+	{
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			ResultSet rezultat;
+			String comanda = "";
+			
+			comanda = "SELECT " + numeProprietate + " FROM Administrare;";
+			rezultat = decl.executeQuery(comanda);
+			
+			rezultat.first();
+			return rezultat.getString(1);
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return "";
+		}
+	}
 }

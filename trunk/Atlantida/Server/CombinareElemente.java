@@ -16,7 +16,7 @@ public class CombinareElemente
 		{
 			int idParinte = 0;
 			Inventar_utilizator inventarUtilizator = new Inventar_utilizator("Inventare");
-
+			
 			inventarUtilizator.creareConexiune();
 			inventarUtilizator.inserareInregistrareVida(numeUtilizator);
 			idParinte = inventarUtilizator.getUltimulElement(numeUtilizator);
@@ -34,7 +34,7 @@ public class CombinareElemente
 			}
 			
 
-			inventarUtilizator.calculareProprietati(numeUtilizator, idParinte);
+			inventarUtilizator.calculareProprietati(numeUtilizator, idParinte, id.length);
 			inventarUtilizator.inchidereConexiune();
 			
 			return idParinte;

@@ -52,11 +52,9 @@ public class Dezintegrare extends BazaDeDate
 			{
 				i++;
 			}
-			System.out.println("Numar randuri: " + i);
 			if (rezultat.last())
 			{
 				nrElementeSterse = (int)Math.ceil((double)(0.2 * rezultat.getRow()));
-				System.out.println("Numar elem de sters: " + nrElementeSterse + " " + rezultat.getRow());
 				
 				String cmd = "";
 				
@@ -73,11 +71,11 @@ public class Dezintegrare extends BazaDeDate
 				}
 				
 				cmd = cmd.replaceFirst("OR", "");
-				System.out.println(cmd);
 				this.stergereElementCompus(numeUtilizator, cmd);
 			}
 			
 			this.dezintegrareElementAtomic(numeUtilizator, idElement);//Se sterge elementul compus
+			
 			
 			comanda = "UPDATE " + numeUtilizator + " SET parinte=-1 WHERE parinte=" + idElement + ";";
 			decl.addBatch(comanda);
@@ -144,7 +142,7 @@ public class Dezintegrare extends BazaDeDate
 			String comanda = "";
 			ResultSet rezultat = null;
 			
-			comanda = "SELECT ID from " + numeUtilizator + " WHERE SANATATE = 0 OR RANDAMENT = 0;";
+			comanda = "SELECT ID from " + numeUtilizator + " WHERE SANATATE <= 0 OR RANDAMENT <= 0;";
 			
 			rezultat = decl.executeQuery(comanda);
 
