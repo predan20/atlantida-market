@@ -1,7 +1,11 @@
 import java.awt.Color;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.table.TableCellRenderer;
 
 
 public class StartPage extends javax.swing.JPanel {
@@ -80,16 +84,32 @@ public class StartPage extends javax.swing.JPanel {
 
         
         jTable1.setAutoCreateRowSorter(true);
-        if (header!=null && values != null)
+        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.getViewport().setBackground(new Color(255, 255, 204));
+        jScrollPane1.getVerticalScrollBar().setBackground(new Color(255, 255, 204));
+        jScrollPane1.getHorizontalScrollBar().setBackground(new Color(255, 255, 204));
+        jScrollPane1.getHorizontalScrollBar().setForeground(new Color(255, 255, 204));
+        jScrollPane1.getVerticalScrollBar().setForeground(new Color(255, 255, 204));
+        jTable1.getTableHeader().setBackground(new Color(255, 255, 204));
+        jTable1.setBackground(new Color(255, 255, 204));
+        jScrollPane1.setBackground(new Color(255, 255, 204));
+        jScrollPane1.getHorizontalScrollBar().getComponent(1).setBackground(new Color(255, 255, 204));
+        jScrollPane1.getHorizontalScrollBar().getComponent(0).setBackground(new Color(255, 255, 204));
+        jScrollPane1.getVerticalScrollBar().getComponent(1).setBackground(new Color(255, 255, 204));
+        jScrollPane1.getVerticalScrollBar().getComponent(0).setBackground(new Color(255, 255, 204));
+
+
+        if (header!=null && values!= null)
         {
-	        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-	                values, header));
+	       jTable1.setModel(new javax.swing.table.DefaultTableModel(values, header));
 	        jTable1.setCellSelectionEnabled(false);
+	        
 	        jTable1.setRowSelectionAllowed(true);
 	        jTable1.removeColumn(jTable1.getColumn("ID"));
 	        jTable1.removeColumn(jTable1.getColumn("PARINTE"));
 	        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-	        jScrollPane1.setViewportView(jTable1);
+
+
 	      
         }
         javax.swing.GroupLayout panelStartPageLayout = new javax.swing.GroupLayout(panelStartPage);
@@ -252,6 +272,16 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JLabel titleLabelStartPage;
     // End of variables declaration
     
+    
+   public static void main(String[] args)
+	{
+    	StartPage page = new StartPage(null,null);
+    	JFrame frame = new JFrame();
+    	
+    	frame.setContentPane(page);
+    	frame.setBounds(50, 50, 800, 600);
+    	frame.setVisible(true);
+	}
 }
 
 
