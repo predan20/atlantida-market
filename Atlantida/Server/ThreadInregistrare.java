@@ -20,7 +20,6 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 	{
 		ArrayList<String> numeColoane = new ArrayList<String>();
 		
-		
 		String numeUtilizator = "";
 		String parolaUtilizator = "";
 		String emailUtilizator = "";
@@ -66,9 +65,18 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 		
 		System.out.println("Inregistare: " + numeUtilizator + " -> " + parolaUtilizator);
 		//ADAUGAM in numeColoane, pe ultimul rand si numar de puncte initial al jucatorului
-		numeColoane.add(numarPuncte);
 
-		return numeColoane;
+		dateUtilizator = new ArrayList<String>();
+		String coloane = "";
+		for (int i = 0; i < numeColoane.size(); i++)
+		{
+			coloane += numeColoane.get(i) + " ";
+		}
+		
+		dateUtilizator.add(coloane);
+		dateUtilizator.add(numarPuncte);
+		
+		return dateUtilizator;
 
 	}
 
