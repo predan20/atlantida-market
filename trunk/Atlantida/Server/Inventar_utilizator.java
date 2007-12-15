@@ -16,6 +16,13 @@ public class Inventar_utilizator extends BazaDeDate
 		super(numeBazaDate);
 	}
 	
+	/**
+	 * Creaza inventarul noului utilizator. A se apela doar la inregistrarea noului jucator
+	 * tabela nou creata ia ca parametru numele coloanelor(deoarece numarul si numele coloanelor
+	 * variaza in functie de elementele cu proprietati speciale)
+	 * @param numeUtilizator
+	 * @param numeColoane
+	 */
 	public void creareInventar(String numeUtilizator, ArrayList<String> numeColoane)
 	{
 		try
@@ -56,6 +63,17 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 
+	/**
+	 * Insereaza un nou element in inventar. Numele tabelei este dat de numele utilizatorului,
+	 * proprietatile elementului sunt primite ca parametru, (Atentie!) stringul trebuie sa aiba valorile 
+	 * proprietatilor despartite prin virgula!
+	 * @param numeUtilizator
+	 * @param numeElement
+	 * @param proprietatiElement
+	 * @return 
+	 * true la succes,
+	 * false in caz de exceptie
+	 */
 	public boolean inserareInregistrare(String numeUtilizator, String numeElement, String proprietatiElement)
 	{	//Trebuie modificata dupa noile date
 		Statement decl = null;
@@ -81,6 +99,13 @@ public class Inventar_utilizator extends BazaDeDate
 		
 	}
 	
+	/**
+	 * insereaza o inregistrare vida in tabela data de numele utilizatorului
+	 * @param numeUtilizator
+	 * @return
+	 * true la succes,
+	 * false in cez de exceptie
+	 */
 	public boolean inserareInregistrareVida(String numeUtilizator)
 	{
 		Statement decl = null;
@@ -126,7 +151,13 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 
-	
+	/**
+	 * Pentru determinarea inventarului tabelei date de nume utilizator
+	 * * @param numeUtilizator
+	 * @param numeColoane
+	 * @return
+	 * inventarul sub forma de ArrayList<String> 
+	 */
 	public ArrayList<String> getInventar(String numeUtilizator, ArrayList<String> numeColoane)
 	{
 		ArrayList<String> inventar = new ArrayList<String>();
@@ -163,6 +194,17 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 
+	/**
+	 * Calculeaza toate proprietatile unui element nou in tabela data de numele utilizatorului.
+	 * Selectia elementelor se face dupa id-ul parinte. Aceasta metoda calculeaza toate
+	 * proprietatile unui element si face update in tabela utilizatorului cu noile valori.
+	 * 
+	 * @param numeUtilizator
+	 * @param idParinte
+	 * @param nrComponente
+	 * @return
+	 * true la succes, false in caz de eroare
+	 */
 	public boolean calculareProprietati(String numeUtilizator, int idParinte, int nrComponente)
 	{		
 		ArrayList<Float> valoareProprietati = new ArrayList<Float>();
@@ -247,7 +289,20 @@ public class Inventar_utilizator extends BazaDeDate
 	}
 	
 	
-	
+	/**
+	 * Calculeaza toate operatiile permise de mySQL(sum,min,max,avg,..) mai putin produsul.
+	 * valorile sunt luate din tabela utilizatorului.Formatul string-ului este:
+	 * SUM(field),.... In caz ca se doreste cu restrictii la elementele care au doar 
+	 * proprietea speciala care este calculata va fi SUM(field) SEL,....
+	 * Daca sunt operatii simple si operatii simple cu restrictii acestea vor fi separate,
+	 * cele simple pe prima linie, iar cele cu restrictie pe o a doua linie( din acelasi string!)
+	 * @param numeUtilizator
+	 * @param idParinte
+	 * @param operatiiSimple
+	 * @param proprSpeciala
+	 * @return
+	 * rezultatul operatiilor pe baza de date sub forma unui ArrayList<String>
+	 */
 	
 	public ArrayList<String> calculOperatiiSimple(String numeUtilizator, int idParinte, String operatiiSimple,String proprSpeciala)
 	{		
@@ -303,7 +358,19 @@ public class Inventar_utilizator extends BazaDeDate
 			return null;
 		}
 	}
-
+	/**
+	 * Calculeaza produsul, valorile sunt luate din tabela utilizatorului.
+	 * Formatul string-ului este: MULT(field),.... In caz ca se doreste cu restrictii la 
+	 * elementele care au doar proprietea speciala care este calculata va fi MULT(field) SEL,....
+	 * Daca sunt produse si produse cu restrictii acestea vor fi separate,
+	 * cele simple pe prima linie, iar cele cu restrictie pe o a doua linie( din acelasi string!)
+	 * @param numeUtilizator
+	 * @param idParinte
+	 * @param operatiiSimple
+	 * @param proprSpeciala
+	 * @return
+	 * rezultatul produselor sub forma unui ArrayList<String>
+	 */
 
 	public ArrayList<String> calculProdus(String numeUtilizator, int idParinte,
 			String campuriProdus,String proprSpeciala) 
@@ -375,7 +442,11 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 
 	}
-
+	/**
+	 * returneaza numele tuturor coloanelor pentru a crea tabela inventar din client
+	 * @param numeTabela
+	 * @return
+	 */
 	
 	public ArrayList<String> getNumeColoane(String numeTabela)
 	{
@@ -404,6 +475,16 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
+	/**
+	 * Seteaza in tabela nume utilizator campul parinte cu valoare data
+	 * de parametrul parinte pentru elementul care are ID-ul egal cu parametrul
+	 * idElement
+	 * @param numeUtilizator
+	 * @param idElement
+	 * @param parinte
+	 * @return
+	 * true la succes, false in caz de exceptie
+	 */
 	public boolean setParinte(String numeUtilizator, String idElement, int parinte)
 	{
 		try
@@ -425,6 +506,18 @@ public class Inventar_utilizator extends BazaDeDate
 		return true;
 	}	
 	
+	/**
+	 * Seteaza valoarea unei coloane din tabela nume utilizator,
+	 * numele coloanei este dat de parametrul camp. Pozitia la care se face
+	 * update este data de catre perametrul ID, noua valoare fiind data de
+	 * parametrul valoare
+	 * @param numeUtilizator
+	 * @param id
+	 * @param camp
+	 * @param valoare
+	 * @return
+	 * true la succes, false in caz de exceptie
+	 */
 	public boolean setCamp(String numeUtilizator,int id,String camp,float valoare)
 	{
 		
@@ -447,6 +540,19 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
+	/**
+	 * Calculeaza o valoare speciala pentru formula data
+	 * de parametrul expresie. Fomula trebuie sa aiba formatul:
+	 * x1=OP(field) x2=OP(field)...x1 op x2..., unde OP reprezinta
+	 * operatiile cu coloanele date de field(sum,avg,mult..), iar op 
+	 * reprezinta operatiile matematice 
+	 * @param numeUtilizator
+	 * @param idParinte
+	 * @param expresie
+	 * @param numePropSpec
+	 * @return
+	 * valoarea proprietatii speciale
+	 */
 	public float calculValoareProprSpeciala(String numeUtilizator, int idParinte, String expresie, String numePropSpec )
 	{
 		EvaluareExpresie evaluareExpresie;
@@ -483,7 +589,18 @@ public class Inventar_utilizator extends BazaDeDate
 		
 		return valPropSpeciala;
 	}
-	
+	/**
+	 * Actualizeaza parametrii sanatate,randament si consum.
+	 * Valorile cu care se modifica sunt date ca parametru.
+	 * In caz ca se doreste sa scada atunci parametrul respectiv 
+	 * va fi dat cu valoare negativa, in caz contrar pozitiva
+	 * @param numeUtilizator
+	 * @param actualizareSanatate
+	 * @param actualizareRandament
+	 * @param actualizareConsum
+	 * @return
+	 * true la succes, false in caz de exceptie
+	 */
 	public boolean actualizareProprietati(String numeUtilizator,float actualizareSanatate, float actualizareRandament, float actualizareConsum)
 	{
 		try
@@ -506,6 +623,17 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
+	/**
+	 * Actualizeaza toate inventarele.
+	 * Parametrii reprezinta valorile cu care se modifica proprietatile
+	 * elementelor. In caz ca se doreste sa scada atunci parametrul respectiv 
+	 * va fi dat cu valoare negativa, in caz contrar pozitiva
+	 * @param actualizareSanatate
+	 * @param actualizareRandament
+	 * @param actualizareConsum
+	 * @return
+	 * true la succes, false in caz de exceptie
+	 */
 	public boolean actualizareProprietatiDinInventare(float actualizareSanatate, float actualizareRandament, float actualizareConsum)
 	{
 		try
@@ -532,6 +660,12 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
+	/**
+	 * Actualizeaza punctele elementelor din inventarul unui utilizator
+	 * @param numeUtilizator
+	 * @return
+	 * true la succes, false in caz de exceptie
+	 */
 	public boolean calculNumarPuncteElem(String numeUtilizator)
 	{
 		try

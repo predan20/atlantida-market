@@ -41,7 +41,6 @@ public class ThreadLogout extends ConnectionAbstractThread
 						
 			jucatorOnline.inchidereConexiune();
 			
-			this.server.scriereDate(dateUtilizator);
 			System.out.println("Logout: Autentificare: " + numeUtilizator + " -> " + parolaUtilizator);
 		}
 		else
