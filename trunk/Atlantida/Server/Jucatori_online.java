@@ -64,6 +64,7 @@ public class Jucatori_online extends BazaDeDate
 			comanda = "UPDATE Jucatori_online " + "SET nr_puncte= nr_puncte " + operator + valoareElement + " WHERE utilizator='" + numeUtilizator+ "';";
 			decl.addBatch(comanda);
 			decl.executeBatch();
+			System.out.println("Gata. Mi-a trecut!");
 			return true;
 		}
 		catch (Exception e) 

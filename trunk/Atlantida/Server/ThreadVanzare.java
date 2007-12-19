@@ -15,8 +15,10 @@ public class ThreadVanzare extends ConnectionAbstractThread
 	{
 		
 		String numeUtilizator = "";
+		String coloane = "";
 		int idElem = 0;
 		float pretVanzare = 0;
+		String numarPuncte = "";
 		int idNou = 0;
 		
 		numeUtilizator = dateUtilizator.get(0);
@@ -30,10 +32,29 @@ public class ThreadVanzare extends ConnectionAbstractThread
 		piata.modificareNrPuncte("Piata", idNou, "*");
 		piata.inchidereConexiune();
 		
-		Jucatori_online jucator = new Jucatori_online("Joc");
+		Jucatori_online jucatorOnline = new Jucatori_online("Joc");
+		jucatorOnline.creareConexiune();
+		jucatorOnline.actualizareCapitalJucator(numeUtilizator, pretVanzare, "+");
+		numarPuncte = jucatorOnline.getNumarPuncte(numeUtilizator);
+		jucatorOnline.inchidereConexiune();
+		
+		ArrayList<String> numeColoane = new ArrayList<String>();
+		Jucator jucator = new Jucator("Joc");
 		jucator.creareConexiune();
-		jucator.actualizareCapitalJucator(numeUtilizator, pretVanzare, "+");
+		numeColoane = jucator.getNumeColoane(numeUtilizator);
 		jucator.inchidereConexiune();
+		
+		for (String nume : numeColoane)
+		{
+			coloane += nume + " ";
+		}
+		
+		Inventar_utilizator inventar_utilizator = new Inventar_utilizator("Inventare");
+		inventar_utilizator.creareConexiune();
+		dateUtilizator = inventar_utilizator.getInventar(numeUtilizator, numeColoane);
+		dateUtilizator.add(0, coloane);
+		dateUtilizator.add(numarPuncte);
+		inventar_utilizator.inchidereConexiune();
 		
 		return dateUtilizator;
 	}

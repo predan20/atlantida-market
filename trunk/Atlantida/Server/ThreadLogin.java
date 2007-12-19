@@ -54,7 +54,7 @@ public class ThreadLogin extends ConnectionAbstractThread
 			dateUtilizator.add(numarPuncte);
 			dateUtilizator.add(0,coloane);
 			inventarUtilizator.inchidereConexiune();
-			
+
 			System.out.println("Login: Autentificare: " + numeUtilizator + " -> " + parolaUtilizator);
 		}
 		else

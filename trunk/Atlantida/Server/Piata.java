@@ -149,6 +149,41 @@ public class Piata extends BazaDeDate
 		}
 	}
 	
+	public ArrayList<String> filtrareElemente(float capital)
+	{
+		ArrayList<String> elementeInventar = new ArrayList<String>();
+		
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			ResultSet rezultat;
+			String comanda = "";
+			String element = "";
+			
+			comanda = "SELECT * FROM Piata  WHERE nr_puncte <= " + capital + ";";
+			rezultat = decl.executeQuery(comanda);
+			
+			int coloane = rezultat.getMetaData().getColumnCount();
+			while(rezultat.next())
+			{
+				element = "";
+				for (int i = 1; i <= coloane;i++)
+				{
+					element += rezultat.getString(i) + " ";
+				}
+				elementeInventar.add(element);
+				System.out.println(element);
+			}
+		
+			return elementeInventar;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public boolean stergereInregistrare(int idElem, String inventar)
 	{
 		try
@@ -260,7 +295,7 @@ public class Piata extends BazaDeDate
 					sumaPropSpeciale) * rezultat.getFloat("RANDAMENT") * rezultat.getFloat("RATA_INV") * 
 					rezultat.getFloat("NR_COMP") * 100;
 			System.out.println(numarPuncte);
-			comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + rezultat.getShort("ID") + ";";
+			comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + idElem + ";";
 			update.addBatch(comanda);
 			update.executeBatch();
 			return true;
