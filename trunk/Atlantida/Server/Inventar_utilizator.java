@@ -650,8 +650,11 @@ public class Inventar_utilizator extends BazaDeDate
 			
 			while(rezultat.next())
 			{
-				this.actualizareProprietati(rezultat.getString(1), actualizareSanatate, actualizareRandament, actualizareConsum);
-				this.calculNumarPuncteElem(rezultat.getString(1));
+				if(!rezultat.getString(1).equals("Piata") && !rezultat.getString(1).equals("Licitatii"))
+				{
+					this.actualizareProprietati(rezultat.getString(1), actualizareSanatate, actualizareRandament, actualizareConsum);
+					this.calculNumarPuncteElem(rezultat.getString(1));
+				}
 			}
 			return true;
 		}

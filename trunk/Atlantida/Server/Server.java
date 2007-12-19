@@ -18,6 +18,12 @@ public class Server extends Thread
 	private List sockets = new LinkedList();
 	private List newSockets = new LinkedList();
 	private String numeClasa;
+	public static int durataCiclu = 30;
+	public static float valoareActualizareSanatate = 0;
+	public static float valoareActualizareRandament = 0;
+	public static float valoareActualizareConsum = 0;
+	public static int timpLicitatie = 30;
+	
 	public Server(int port, String numeClasa)
 	{
 		this.port = port;
@@ -124,6 +130,7 @@ public class Server extends Thread
 		Server server3004 = new Server(3004,"ThreadAdministrator");
 		Server server3005 = new Server(3005,"ThreadVanzare");
 		Server server3006 = new Server(3006,"ThreadCumparare");
+		Server server3007 = new Server(3007,"ThreadInventar");
 		
 		server3000.start();
 		server3001.start();
@@ -132,6 +139,7 @@ public class Server extends Thread
 		server3004.start();
 		server3005.start();
 		server3006.start();
+		server3007.start();
 		
 		server3000.listenTo();
 		server3001.listenTo();
@@ -140,12 +148,21 @@ public class Server extends Thread
 		server3004.listenTo();
 		server3005.listenTo();
 		server3006.listenTo();
+		server3007.listenTo();
 		
 		//Apel la un anumit interval de timp pentru functia de actualizare a parametrilor elementelor
-		//TREBUIE luata din baza de date durata unui ciclu, momentan este setata manual la 30 de secunde 
-//		System.out.println("About to schedule task.");
-//		new CeasServer(30);
-//		System.out.println("Task scheduled.");
+		//System.out.println("About to schedule task.");
+		Administrator admin = new Administrator("Joc");
+		admin.creareConexiune();
+		Server.durataCiclu = Integer.parseInt(admin.getProprietateInitiala("DURATA_CICLU"));
+		Server.valoareActualizareSanatate = Float.parseFloat(admin.getProprietateInitiala("ACT_SANATATE"));
+		Server.valoareActualizareRandament = Float.parseFloat(admin.getProprietateInitiala("ACT_RANDAMENT"));
+		Server.valoareActualizareConsum = Float.parseFloat(admin.getProprietateInitiala("ACT_CONSUM"));
+		Server.timpLicitatie = Integer.parseInt(admin.getProprietateInitiala("LICIT_SIMPLA"));
+		admin.inchidereConexiune();
+		
+		//new CeasServer(Server.durataCiclu);
+		//System.out.println("Task scheduled.");
 		
 		
 		while(true)
@@ -157,6 +174,7 @@ public class Server extends Thread
 			server3004.listenTo();
 			server3005.listenTo();
 			server3006.listenTo();
+			server3007.listenTo();
 		}
 	}
 }

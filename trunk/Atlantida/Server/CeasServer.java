@@ -15,12 +15,12 @@ public class CeasServer
 	{
 		public void run() 
 		{
-			System.out.println("Time's up, mf!");
+			System.out.println("Time's up, mf in CeasServer!");
 			Inventar_utilizator inventar_utilizator = new Inventar_utilizator("Inventare");
 			inventar_utilizator.creareConexiune();
-			inventar_utilizator.actualizareProprietatiDinInventare((float)-5, (float)-5, (float)1);
+			inventar_utilizator.actualizareProprietatiDinInventare(Server.valoareActualizareSanatate, Server.valoareActualizareRandament, Server.valoareActualizareConsum);
 			inventar_utilizator.inchidereConexiune();
-			new CeasServer(30);
+			new CeasServer(Server.durataCiclu);
 		}
 	}
 }

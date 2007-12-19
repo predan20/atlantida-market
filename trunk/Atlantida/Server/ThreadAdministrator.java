@@ -39,6 +39,13 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 			parametriAdministare.add(dateUtilizator.get(i));
 		}
 		
+		//Setare valori de actualizare din clasa Server cu noile date de admin
+		Server.durataCiclu = Integer.parseInt(durataCiclu);
+		Server.valoareActualizareSanatate = Float.parseFloat(actualizareSanatate);
+		Server.valoareActualizareRandament = Float.parseFloat(actualizareRandament);
+		Server.valoareActualizareConsum = Float.parseFloat(actualizareConsum);
+		Server.timpLicitatie = Integer.parseInt(durataLicitatieSimpla);
+		
 		/*Administrator admin = new Administrator("Joc");
 		admin.creareConexiune();
 		admin.setareParametriAdministrare(parametriAdministare);
