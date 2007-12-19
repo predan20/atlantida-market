@@ -16,21 +16,29 @@ public class ThreadCumparare extends ConnectionAbstractThread
 	{
 		String numeUtilizator = "";
 		int idElem = 0, verificare;
-		float pretCumparare = 0;
+		float pretCumparare, pretElement = 0;
 		int idNou = 0;
 		
 		numeUtilizator = dateUtilizator.get(0);
 		idElem = Integer.parseInt(dateUtilizator.get(1));
+		pretCumparare = Float.parseFloat(dateUtilizator.get(2));
 		
 		Piata piata = new Piata("Inventare");
 		piata.creareConexiune();
-		pretCumparare = piata.getValoareElement("Piata", idElem);
+		pretElement = piata.getValoareElement("Piata", idElem);
 		if((verificare = piata.cumparareElementeAtomiceCuPropRandom(numeUtilizator, idElem)) == 0)
-			{
-				System.out.println("elem deja vandut" + pretCumparare);
-				idNou = piata.mutareElement("Piata", numeUtilizator, idElem);
-				piata.modificareNrPuncte(numeUtilizator, idNou, "/");
-			}
+		{
+			Licitatie licitatie = new Licitatie("Inventare");
+			licitatie.creareConexiune();
+			licitatie.inserareJucatorLicitatie(idElem, numeUtilizator, pretCumparare);
+			licitatie.inchidereConexiune();
+			
+			System.out.println("elem deja vandut" + pretCumparare);
+			//idNou = piata.mutareElement("Piata", numeUtilizator, idElem);
+			//piata.modificareNrPuncte(numeUtilizator, idNou, "/");
+			
+			System.out.println("Bah, io pornesc licitatia!");
+		}
 		else if(verificare != -1)
 		{
 			System.out.println("elem random" + pretCumparare);
@@ -41,9 +49,10 @@ public class ThreadCumparare extends ConnectionAbstractThread
 		
 		Jucatori_online jucator = new Jucatori_online("Joc");
 		jucator.creareConexiune();
+		System.out.println("Bah. mie imi cam vine sa actualizez ceva!");
 		jucator.actualizareCapitalJucator(numeUtilizator, pretCumparare, "-");
 		jucator.inchidereConexiune();
-		
+
 		return dateUtilizator;
 	}
 

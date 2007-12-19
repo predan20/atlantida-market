@@ -153,7 +153,7 @@ public class Inventar_utilizator extends BazaDeDate
 
 	/**
 	 * Pentru determinarea inventarului tabelei date de nume utilizator
-	 * * @param numeUtilizator
+	 * @param numeUtilizator
 	 * @param numeColoane
 	 * @return
 	 * inventarul sub forma de ArrayList<String> 
@@ -181,7 +181,9 @@ public class Inventar_utilizator extends BazaDeDate
 					System.out.println(rezultat.getString(i+1));
 					element += rezultat.getString(i+1) + " ";
 				}
-				
+				System.out.println(element);
+				element.replaceAll("null", "");
+				System.out.println(element);
 				inventar.add(element);
 			}
 			

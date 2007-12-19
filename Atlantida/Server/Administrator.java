@@ -47,9 +47,12 @@ public class Administrator extends BazaDeDate
 			
 			while(rezultat.next())
 			{
-				comanda = "ALTER TABLE " + rezultat.getString(1) + " ADD " + numeColoanaNoua + " FLOAT;";
-				decl_inventare.addBatch(comanda);
-				decl_inventare.executeBatch();				
+				if (!rezultat.getString(1).equals("Licitatii"))
+				{
+					comanda = "ALTER TABLE " + rezultat.getString(1) + " ADD " + numeColoanaNoua + " FLOAT;";
+					decl_inventare.addBatch(comanda);
+					decl_inventare.executeBatch();
+				}
 			}
 			return true;
 		}
