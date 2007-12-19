@@ -17,11 +17,14 @@ public class ThreadCumparare extends ConnectionAbstractThread
 		String numeUtilizator = "";
 		int idElem = 0, verificare;
 		float pretCumparare, pretElement = 0;
+		long secundeRamase = 0;
 		int idNou = 0;
+		String timpStartLicitatie = "";
 		
 		numeUtilizator = dateUtilizator.get(0);
 		idElem = Integer.parseInt(dateUtilizator.get(1));
 		pretCumparare = Float.parseFloat(dateUtilizator.get(2));
+		dateUtilizator = new ArrayList<String>();
 		
 		Piata piata = new Piata("Inventare");
 		piata.creareConexiune();
@@ -30,7 +33,17 @@ public class ThreadCumparare extends ConnectionAbstractThread
 		{
 			Licitatie licitatie = new Licitatie("Inventare");
 			licitatie.creareConexiune();
-			licitatie.inserareJucatorLicitatie(idElem, numeUtilizator, pretCumparare);
+			timpStartLicitatie = licitatie.inserareJucatorLicitatie(idElem, numeUtilizator, pretCumparare);
+			System.out.println("Timpul de start returnat: " + timpStartLicitatie);
+			//{
+				System.out.println("\n\nTimpul de start: " + timpStartLicitatie + "\n\n");
+				secundeRamase = licitatie.getSecundeRamaseDinLicitatie(timpStartLicitatie);
+				dateUtilizator.add(String.valueOf(secundeRamase));
+			//}
+			//else
+			//{
+			//	dateUtilizator.add("-1");
+			//}
 			licitatie.inchidereConexiune();
 			
 			System.out.println("elem deja vandut" + pretCumparare);
@@ -44,6 +57,7 @@ public class ThreadCumparare extends ConnectionAbstractThread
 			System.out.println("elem random" + pretCumparare);
 			//Actualizare nr puncte in inventarul utilizatorului
 			piata.actualizareNrPuncte(numeUtilizator, verificare);
+			dateUtilizator.add("-1");
 		}
 		piata.inchidereConexiune();
 		
@@ -52,7 +66,9 @@ public class ThreadCumparare extends ConnectionAbstractThread
 		System.out.println("Bah. mie imi cam vine sa actualizez ceva!");
 		jucator.actualizareCapitalJucator(numeUtilizator, pretCumparare, "-");
 		jucator.inchidereConexiune();
-
+		
+		for(String id : dateUtilizator)
+		System.out.println("Secunde returnate la cumparare: " + id);
 		return dateUtilizator;
 	}
 

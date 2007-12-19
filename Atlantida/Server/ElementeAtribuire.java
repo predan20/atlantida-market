@@ -1,4 +1,3 @@
-
 public class ElementeAtribuire
 {
 	private String lValue;
@@ -29,5 +28,4 @@ public class ElementeAtribuire
 	{
 		rValue = value;
 	}
-	
 }

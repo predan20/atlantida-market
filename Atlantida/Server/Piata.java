@@ -149,7 +149,7 @@ public class Piata extends BazaDeDate
 		}
 	}
 	
-	public ArrayList<String> filtrareElemente(float capital)
+	public ArrayList<String> filtrareElemente(String capital)
 	{
 		ArrayList<String> elementeInventar = new ArrayList<String>();
 		
@@ -160,7 +160,7 @@ public class Piata extends BazaDeDate
 			String comanda = "";
 			String element = "";
 			
-			comanda = "SELECT * FROM Piata  WHERE nr_puncte <= " + capital + ";";
+			comanda = "SELECT * FROM Piata  WHERE nr_puncte <= " + capital + " AND parinte < 0;";
 			rezultat = decl.executeQuery(comanda);
 			
 			int coloane = rezultat.getMetaData().getColumnCount();

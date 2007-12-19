@@ -12,25 +12,26 @@ public class Licitatie extends BazaDeDate
 		super(numeBazaDate);
 	}
 	
-	public boolean inserareJucatorLicitatie(int idElem, String numeUtilizator, float oferta)
+	public String inserareJucatorLicitatie(int idElem, String numeUtilizator, float oferta)
 	{
 		try
 		{
 			Statement decl = this.conn.createStatement();
 			String comanda = "";
+			String timpStart = this.getTimpStart(idElem);
 			
-			
-			comanda = "INSERT INTO Licitatii () VALUES(" + idElem + ",'" + numeUtilizator + "'," + oferta + ",'" + this.getTimpStart(idElem) + "');";
+			comanda = "INSERT INTO Licitatii (ID_ELEM ,NUME ,OFERTA ,TIMP_START) VALUES(" 
+					  + idElem + ",'" + numeUtilizator + "'," + oferta + ",'" + timpStart + "');";
 			
 			System.out.println("Insrare jucator in licitatie: " + comanda);
 			decl.addBatch(comanda);
 			decl.executeBatch();
-			return true;
+			return timpStart;
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			return false;
+			return "";
 		}
 	}
 	
@@ -52,18 +53,17 @@ public class Licitatie extends BazaDeDate
 			else
 			{
 				Calendar calendar = Calendar.getInstance();
-				SimpleDateFormat timp = new SimpleDateFormat("hh:mm:ss");
+				SimpleDateFormat timp = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				System.out.println("\n\nOra exacta: " + timp.format(calendar.getTime()) + "\n\n");
-				new CeasLicitatii(30);
+				new CeasLicitatii(Server.timpLicitatie);
+				
 				return timp.format(calendar.getTime());
-				
-				
 			}
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			return "00:00:00";
+			return "0000-00-00 00:00:00";
 		}
 	}
 	
@@ -139,5 +139,40 @@ public class Licitatie extends BazaDeDate
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public long getSecundeRamaseDinLicitatie(String timpStartLicitatie)
+	{
+		String timpFinal = "";
+		String[] data = timpStartLicitatie.split(" ");
+		String[] anLunaZi = data[0].split("-");
+		String[] oraMinSec = data[1].split(":");
+		int an = Integer.parseInt(anLunaZi[0]);
+		int luna = Integer.parseInt(anLunaZi[1]);
+		int zi = Integer.parseInt(anLunaZi[2]);
+		int ora = Integer.parseInt(oraMinSec[0]);
+		int minut = Integer.parseInt(oraMinSec[1]);
+		int secunda = Math.round(Float.parseFloat(oraMinSec[2]));
+		
+		Date dataStart = new Date(an, luna, zi, ora, minut, secunda);
+		
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat timp = new SimpleDateFormat("yyyy:MM:dd:hh:mm:ss");
+		timpFinal = timp.format(cal.getTime());
+		data = timpFinal.split(":");
+		an = Integer.parseInt(data[0]);
+		luna = Integer.parseInt(data[1]);
+		zi = Integer.parseInt(data[2]);
+		ora = Integer.parseInt(data[3]);
+		minut = Integer.parseInt(data[4]);
+		secunda = Math.round(Integer.parseInt(data[5]));
+		
+		Date dataFinal = new Date(an, luna, zi, ora, minut, secunda);
+		
+		
+		long sec = (dataFinal.getTime() - dataStart.getTime()) / 1000;
+		sec = (long)Server.timpLicitatie - sec;
+		
+		return sec;
 	}
 }
