@@ -125,7 +125,7 @@ public class Jucator extends BazaDeDate
 		return true;
 	}
 	
-	public boolean validareDate(String numeUtilizator, String parolaUtilizator)
+	public boolean validareDate(String numeUtilizator, String parolaUtilizator,boolean admin)
 	{
 		try
 		{
@@ -133,11 +133,25 @@ public class Jucator extends BazaDeDate
 			String comanda = "";
 			ResultSet rezultat;
 			
-			comanda = "SELECT utilizator FROM Jucatori WHERE utilizator='" + numeUtilizator + "' AND parola ='" + parolaUtilizator + "';";
+			comanda = "SELECT utilizator,tip_jucator FROM Jucatori WHERE utilizator='" + numeUtilizator + "' AND parola ='" + parolaUtilizator + "';";
 			rezultat = decl.executeQuery(comanda);
 			if(rezultat.first())
 			{
-				return true;
+				if(admin == true)
+				{
+					if (rezultat.getInt("TIP_JUCATOR") == 3)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return true;
+				}
 			}
 			else
 			{
@@ -149,7 +163,6 @@ public class Jucator extends BazaDeDate
 			e.printStackTrace();
 			return false;
 		}
-		
 	}
 	
 	public boolean actualizareCapitalJucator(String numeUtilizator, float valoareElement, String operator)

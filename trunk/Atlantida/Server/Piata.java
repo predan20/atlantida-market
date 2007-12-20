@@ -2,6 +2,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.sun.corba.se.spi.orbutil.fsm.State;
+
 
 public class Piata extends BazaDeDate
 {
@@ -322,6 +324,48 @@ public class Piata extends BazaDeDate
 		{	
 			e.printStackTrace();
 			return -1;
+		}
+	}
+	
+	public boolean adaugareElementAtomicNou(String numeElement, String numePropSpec, float valMaxPropSpec, float pretElement)
+	{
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			ResultSet rezultat;
+			String comanda = "";
+			int elemAleator = 0;
+			
+			comanda = "SELECT * FROM Piata WHERE parinte = -2;";
+			rezultat = decl.executeQuery(comanda);
+			
+			rezultat.last();
+			elemAleator = (int)Math.floor(Math.random() * rezultat.getRow());
+			rezultat.absolute(elemAleator);
+			
+			comanda = "INSERT INTO Piata () VALUES(0, '" + numeElement + "', -2, " + pretElement + ", 1, " + rezultat.getString("MASA") + ", " 
+					+ rezultat.getString("CONSUM") + ", " + rezultat.getString("RANDAMENT") + ", " + rezultat.getString("RATA_INV") + ", " 
+					+ rezultat.getString("SANATATE") + ", ";
+			
+			int start = rezultat.findColumn("SANATATE") + 1;
+			for (int i = start; i < rezultat.getMetaData().getColumnCount(); i++)
+			{
+				comanda += "NULL, ";
+			}
+			
+			comanda += valMaxPropSpec + ");";
+			
+			System.out.println("\n\nComanda de inserare elem atomic nou: " + comanda);
+			
+			decl.addBatch(comanda);
+			decl.executeBatch();
+			
+			return true;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

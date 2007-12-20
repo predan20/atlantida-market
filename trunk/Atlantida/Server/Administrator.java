@@ -153,4 +153,32 @@ public class Administrator extends BazaDeDate
 			return "";
 		}
 	}
+	
+	public ArrayList<String> getProprietatiAdministare()
+	{
+		ArrayList<String> proprietati = new ArrayList<String>();
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			ResultSet rezultat;
+			String comanda = "";
+			
+			comanda = "SELECT * FROM Administrare;";
+			rezultat = decl.executeQuery(comanda);
+			
+			System.out.println("\n\nProp: ");
+			rezultat.first();
+			for (int i = 1; i <= rezultat.getMetaData().getColumnCount(); i++)
+			{
+				proprietati.add(rezultat.getString(i));
+				System.out.println(proprietati.get(i-1));
+			}
+			return proprietati;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

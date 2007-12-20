@@ -21,51 +21,67 @@ public class ThreadCumparare extends ConnectionAbstractThread
 		int idNou = 0;
 		String timpStartLicitatie = "";
 		
-		numeUtilizator = dateUtilizator.get(0);
-		idElem = Integer.parseInt(dateUtilizator.get(1));
-		pretCumparare = Float.parseFloat(dateUtilizator.get(2));
-		dateUtilizator = new ArrayList<String>();
-		
-		Piata piata = new Piata("Inventare");
-		piata.creareConexiune();
-		pretElement = piata.getValoareElement("Piata", idElem);
-		if((verificare = piata.cumparareElementeAtomiceCuPropRandom(numeUtilizator, idElem)) == 0)
+		if (!dateUtilizator.get(0).equalsIgnoreCase("retragere"))
 		{
+			numeUtilizator = dateUtilizator.get(0);
+			idElem = Integer.parseInt(dateUtilizator.get(1));
+			pretCumparare = Float.parseFloat(dateUtilizator.get(2));
+			dateUtilizator = new ArrayList<String>();
+			
+			Piata piata = new Piata("Inventare");
+			piata.creareConexiune();
+			pretElement = piata.getValoareElement("Piata", idElem);
+			if((verificare = piata.cumparareElementeAtomiceCuPropRandom(numeUtilizator, idElem)) == 0)
+			{
+				Licitatie licitatie = new Licitatie("Inventare");
+				licitatie.creareConexiune();
+				timpStartLicitatie = licitatie.inserareJucatorLicitatie(idElem, numeUtilizator, pretCumparare);
+				if(!timpStartLicitatie.equals(""))
+				{
+					secundeRamase = licitatie.getSecundeRamaseDinLicitatie(timpStartLicitatie);
+					dateUtilizator.add(String.valueOf(secundeRamase));
+				}
+				else
+				{
+					dateUtilizator.add("-1");
+				}
+				licitatie.inchidereConexiune();
+				
+				System.out.println("elem deja vandut" + pretCumparare);
+				//idNou = piata.mutareElement("Piata", numeUtilizator, idElem);
+				//piata.modificareNrPuncte(numeUtilizator, idNou, "/");
+				
+			}
+			else if(verificare != -1)
+			{
+				System.out.println("elem random" + pretCumparare);
+				//Actualizare nr puncte in inventarul utilizatorului
+				piata.actualizareNrPuncte(numeUtilizator, verificare);
+				dateUtilizator.add("-1");
+			}
+			piata.inchidereConexiune();
+			
+			Jucatori_online jucator = new Jucatori_online("Joc");
+			jucator.creareConexiune();
+			System.out.println("Bah. mie imi cam vine sa actualizez ceva!");
+			jucator.actualizareCapitalJucator(numeUtilizator, pretCumparare, "-");
+			jucator.inchidereConexiune();
+			
+			for(String id : dateUtilizator)
+			System.out.println("Secunde returnate la cumparare: " + id);
+		}
+		else
+		{
+			numeUtilizator = dateUtilizator.get(1);
+			idElem = Integer.parseInt(dateUtilizator.get(2));
+			
 			Licitatie licitatie = new Licitatie("Inventare");
 			licitatie.creareConexiune();
-			timpStartLicitatie = licitatie.inserareJucatorLicitatie(idElem, numeUtilizator, pretCumparare);
-			//{
-				secundeRamase = licitatie.getSecundeRamaseDinLicitatie(timpStartLicitatie);
-				dateUtilizator.add(String.valueOf(secundeRamase));
-			//}
-			//else
-			//{
-			//	dateUtilizator.add("-1");
-			//}
+			licitatie.stergereJucatorDinLicitatie(numeUtilizator, idElem);
 			licitatie.inchidereConexiune();
-			
-			System.out.println("elem deja vandut" + pretCumparare);
-			//idNou = piata.mutareElement("Piata", numeUtilizator, idElem);
-			//piata.modificareNrPuncte(numeUtilizator, idNou, "/");
-			
+			dateUtilizator = new ArrayList<String>();
 		}
-		else if(verificare != -1)
-		{
-			System.out.println("elem random" + pretCumparare);
-			//Actualizare nr puncte in inventarul utilizatorului
-			piata.actualizareNrPuncte(numeUtilizator, verificare);
-			dateUtilizator.add("-1");
-		}
-		piata.inchidereConexiune();
 		
-		Jucatori_online jucator = new Jucatori_online("Joc");
-		jucator.creareConexiune();
-		System.out.println("Bah. mie imi cam vine sa actualizez ceva!");
-		jucator.actualizareCapitalJucator(numeUtilizator, pretCumparare, "-");
-		jucator.inchidereConexiune();
-		
-		for(String id : dateUtilizator)
-		System.out.println("Secunde returnate la cumparare: " + id);
 		return dateUtilizator;
 	}
 

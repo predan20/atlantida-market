@@ -46,28 +46,37 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 		Server.valoareActualizareConsum = Float.parseFloat(actualizareConsum);
 		Server.timpLicitatie = Integer.parseInt(durataLicitatieSimpla);
 		
-		/*Administrator admin = new Administrator("Joc");
+		Administrator admin = new Administrator("Joc");
 		admin.creareConexiune();
 		admin.setareParametriAdministrare(parametriAdministare);
 		
 		if ((!propSpeciala.trim().equals(""))&&(!formula.trim().equals(""))&&(!valMaxima.trim().equals(""))&&(!pretElementAtomic.trim().equals("")))
 		{
 			System.out.println("Intra!!!!");
-			admin.inserareInregistrare(numeElement, propSpeciala, formula, Integer.parseInt(valMaxima), Integer.parseInt(pretElementAtomic));
+			
+			Elemente_atomice elem = new Elemente_atomice("Joc");
+			elem.creareConexiune();
+			elem.inserareInregistrare(numeElement, propSpeciala, formula, Float.parseFloat(valMaxima), Float.parseFloat(pretElementAtomic));
+			elem.inchidereConexiune();
+			
 			admin.actualizareInventarUtilizator(propSpeciala);
 			admin.inchidereConexiune();
 			
 			admin = new Administrator("Inventare");
 			admin.creareConexiune();
-			
 			admin.actualizareInventare(propSpeciala);
 			admin.inchidereConexiune();
+			
+			Piata piata = new Piata("Inventare");
+			piata.creareConexiune();
+			piata.adaugareElementAtomicNou(numeElement, propSpeciala, Float.parseFloat(valMaxima), Float.parseFloat(pretElementAtomic));
+			piata.inchidereConexiune();
 		}
 		else
 		{
 			admin.inchidereConexiune();
 		}
-		*/
+		
 //		dezintegrare.creareConexiune();
 //		dezintegrare.verificareDezintegrare("ionEla12");
 //		dezintegrare.inchidereConexiune();

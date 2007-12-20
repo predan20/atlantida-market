@@ -12,7 +12,7 @@ public class Elemente_atomice extends BazaDeDate
 		super(numeBazaDate);
 	}
 	
-	public int inserareInregistrare(String numeElement, String propSpeciala, String formulaCalcul, int valMaxima, int pretElement)
+	public int inserareInregistrare(String numeElement, String propSpeciala, String formulaCalcul, float valMaxima, float pretElement)
 	{	
 		Statement decl = null;
 		ResultSet rezultat = null;

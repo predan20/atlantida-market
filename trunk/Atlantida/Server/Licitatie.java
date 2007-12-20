@@ -65,7 +65,7 @@ public class Licitatie extends BazaDeDate
 		}
 	}
 	
-	public boolean stergereJucatorLicitatie(int idElem)
+	public boolean stergereLicitatie(int idElem)
 	{
 		try
 		{
@@ -73,6 +73,26 @@ public class Licitatie extends BazaDeDate
 			String comanda = "";
 			
 			comanda = "DELETE FROM Licitatii WHERE id_elem = " + idElem + ";";
+			decl.addBatch(comanda);
+			decl.executeBatch();
+			
+			return true;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean stergereJucatorDinLicitatie(String numeUtilizator, int idElem)
+	{
+		try
+		{
+			Statement decl = this.conn.createStatement();
+			String comanda = "";
+			
+			comanda = "DELETE FROM Licitatii WHERE id_elem = " + idElem + " AND nume = " + numeUtilizator + ";";
 			decl.addBatch(comanda);
 			decl.executeBatch();
 			
@@ -125,7 +145,7 @@ public class Licitatie extends BazaDeDate
 				rezultat.first();
 				el = new ElementeAtribuire(rezultat.getString("ID_ELEM"), "");
 				listaOferte.add(0, el);
-				this.stergereJucatorLicitatie(rezultat.getInt("ID_ELEM"));
+				this.stergereLicitatie(rezultat.getInt("ID_ELEM"));
 				
 				return listaOferte;
 			}
