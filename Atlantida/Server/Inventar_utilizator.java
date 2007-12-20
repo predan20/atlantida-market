@@ -264,7 +264,14 @@ public class Inventar_utilizator extends BazaDeDate
 			start = numeColoane.indexOf("NR_COMP") + 1;
 			for(int i = start; i< numeColoane.size(); i++)
 			{
-				comanda += numeColoane.get(i) + " = " + valoareProprietati.get(i - start)+ ", ";
+				if(valoareProprietati.get(i-start) != 0f)
+				{
+					comanda += numeColoane.get(i) + " = " + valoareProprietati.get(i - start)+ ", ";
+				}
+				else
+				{
+					comanda += numeColoane.get(i) + " = NULL, ";
+				}
 			}
 			comanda = comanda.subSequence(0, comanda.length() - 2) + " WHERE id  = " + idParinte + ";";
 			decl.addBatch(comanda);
@@ -379,14 +386,14 @@ public class Inventar_utilizator extends BazaDeDate
 			String str = "";
 			//campuriProdus = campuriProdus.replaceAll(" ", "\n");
 			BufferedReader reader = new BufferedReader(new StringReader(campuriProdus));
-			int i = 1;
+			int k = 1,i = 0;
 			try 
 			{
 			  while ((str = reader.readLine()) != null) 
 			  {
-				  if (i == 1) 
+				  if (k == 1) 
 				  {
-					comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +";";
+					comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte + ";";
 				  }
 				  else
 				  {
@@ -403,23 +410,44 @@ public class Inventar_utilizator extends BazaDeDate
 					}  */
 				  
 					produs = new ArrayList<Float>();
+					ArrayList<Float> suma = new ArrayList<Float>();
+					
 					for(i = 0; i < rezultatMD.getColumnCount(); i++)
 					{
 						produs.add(1f);
+						suma.add(0f);
 					}
+					
 					rezultatProd.beforeFirst();
 					while(rezultatProd.next())
 					{
 						for (i= 0; i < produs.size(); i++)
 						{
-							produs.set(i,produs.get(i) * rezultatProd.getFloat(i+1));
+							if(rezultatProd.getFloat(i+1)!= 0f)
+							{
+								produs.set(i,produs.get(i) * rezultatProd.getFloat(i+1));
+								suma.set(i, suma.get(i) + rezultatProd.getFloat(i+1));
+							}
+							else
+							{
+								produs.set(i, 1f);
+							}
 						}
 					}
-					for(Float f : produs)
+					
+					
+					for(i = 0; i < produs.size(); i++)
 					{
-						rezultat.add(f.toString());
+						if((produs.get(i) == 1f) && (suma.get(i) == 0f))
+						{
+							rezultat.add("0");
+						}
+						else
+						{
+							rezultat.add(produs.get(i).toString());
+						}
 					}
-					i++;
+					k++;
 			  }
 			  return rezultat;
 			}
@@ -672,6 +700,7 @@ public class Inventar_utilizator extends BazaDeDate
 			
 			while (rezultat.next())
 			{
+				sumaPropSpeciale = 0f;
 				for (int i = (rezultat.findColumn("SANATATE") + 1); i <= rezultat.getMetaData().getColumnCount(); i++)
 				{
 					sumaPropSpeciale += rezultat.getFloat(i);
@@ -680,7 +709,7 @@ public class Inventar_utilizator extends BazaDeDate
 				numarPuncte = (rezultat.getFloat("SANATATE") - rezultat.getFloat("MASA") - rezultat.getFloat("CONSUM") + 
 						sumaPropSpeciale) * rezultat.getFloat("RANDAMENT") * rezultat.getFloat("RATA_INV") * 
 						rezultat.getFloat("NR_COMP") * 100;
-				System.out.println("Numar pct: "+numarPuncte);
+				System.out.println("Numar pct: " + numarPuncte);
 				comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + rezultat.getShort("ID") + ";";
 				update.addBatch(comanda);
 				update.executeBatch();
@@ -692,5 +721,11 @@ public class Inventar_utilizator extends BazaDeDate
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public boolean actualizareNume()
+	{
+		
+		return true;
 	}
 }

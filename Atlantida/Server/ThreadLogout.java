@@ -29,7 +29,7 @@ public class ThreadLogout extends ConnectionAbstractThread
 		jucator.creareConexiune();
 		
 		//Verificam datele primite
-		if(jucator.validareDate(numeUtilizator, parolaUtilizator))
+		if(jucator.validareDate(numeUtilizator, parolaUtilizator, false))
 		{
 			//In cazul in care datele sunt valide instantiem un jucator pe care il vom trimite la client
 			Jucatori_online jucatorOnline = new Jucatori_online("Joc");
