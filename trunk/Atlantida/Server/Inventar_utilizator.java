@@ -28,14 +28,9 @@ public class Inventar_utilizator extends BazaDeDate
 		try
 		{
 			Statement decl = null;
-			try
-			{
-				decl = this.conn.createStatement();
-			}
-			catch(Exception e)
-			{
-				System.out.println("In statement!");
-			}
+
+			decl = this.conn.createStatement();
+
 			String comanda = "";
 			
 			comanda = " CREATE TABLE `" + numeUtilizator + "` (" +
@@ -178,12 +173,8 @@ public class Inventar_utilizator extends BazaDeDate
 				
 				for (int i = 0; i < numeColoane.size(); i++)
 				{
-					System.out.println(rezultat.getString(i+1));
 					element += rezultat.getString(i+1) + " ";
 				}
-				System.out.println(element);
-				element.replaceAll("null", "");
-				System.out.println(element);
 				inventar.add(element);
 			}
 			
@@ -313,7 +304,6 @@ public class Inventar_utilizator extends BazaDeDate
 		ResultSet rezultatSum = null;
 		ResultSetMetaData rezultatSumMetaData;
 		
-		//mai trebuie luat linie cu linie si la produs. in rest pare ok.
 		try
 		{
 			Statement decl = this.conn.createStatement();
@@ -345,6 +335,7 @@ public class Inventar_utilizator extends BazaDeDate
 					{
 						valoareProprietati.add(rezultatSum.getString(j));
 					}  
+					i++;
 			  }
 			  return valoareProprietati;
 			} 
@@ -401,7 +392,7 @@ public class Inventar_utilizator extends BazaDeDate
 				  {
 					  comanda = "select " + str + " from " + numeUtilizator + " WHERE parinte="  + idParinte +" AND " + proprSpeciala + " IS NOT NULL;";
 				  }
-				  
+				  System.out.println("Produs: " + comanda);
 				  rezultatProd = decl.executeQuery(comanda);
 				  rezultatMD = (ResultSetMetaData)rezultatProd.getMetaData();
 					
@@ -428,6 +419,7 @@ public class Inventar_utilizator extends BazaDeDate
 					{
 						rezultat.add(f.toString());
 					}
+					i++;
 			  }
 			  return rezultat;
 			}
@@ -463,8 +455,6 @@ public class Inventar_utilizator extends BazaDeDate
 			while (rezultat.next())
 			{
 				numeColoane.add(rezultat.getString(1));
-				System.out.println(rezultat.getString(1));
-				
 				i++;
 			}
 			
@@ -559,10 +549,6 @@ public class Inventar_utilizator extends BazaDeDate
 	{
 		EvaluareExpresie evaluareExpresie;
 		ArrayList<String> evalList = null;
-//		Inventar_utilizator inventarUtilizator = new Inventar_utilizator("89.43.103.108", "3306", "Inventare", "root", "xxx123yyy");
-//
-//		inventarUtilizator.creareConexiune();
-		
 		
 		evaluareExpresie = new EvaluareExpresie(expresie);
 		
@@ -675,7 +661,7 @@ public class Inventar_utilizator extends BazaDeDate
 	{
 		try
 		{
-			float numarPuncte = 0, sumaPropSpeciale = 0;
+			float numarPuncte = 0f, sumaPropSpeciale = 0f;
 			Statement decl = this.conn.createStatement();
 			Statement update = this.conn.createStatement(); 
 			String comanda = "";
@@ -690,11 +676,11 @@ public class Inventar_utilizator extends BazaDeDate
 				{
 					sumaPropSpeciale += rezultat.getFloat(i);
 				}
-				
+				System.out.println(rezultat.getFloat("MASA") + " " + rezultat.getFloat("CONSUM") + " " + rezultat.getFloat("RANDAMENT") +" "+rezultat.getFloat("RATA_INV")+" "+rezultat.getFloat("SANATATE")+" "+sumaPropSpeciale);
 				numarPuncte = (rezultat.getFloat("SANATATE") - rezultat.getFloat("MASA") - rezultat.getFloat("CONSUM") + 
 						sumaPropSpeciale) * rezultat.getFloat("RANDAMENT") * rezultat.getFloat("RATA_INV") * 
 						rezultat.getFloat("NR_COMP") * 100;
-
+				System.out.println("Numar pct: "+numarPuncte);
 				comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + rezultat.getShort("ID") + ";";
 				update.addBatch(comanda);
 				update.executeBatch();

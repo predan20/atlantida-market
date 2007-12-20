@@ -51,9 +51,11 @@ public class EvaluareExpresie
 			{
 				if(e.getRValue().contains("MULT"))
 				{
+					System.out.println("Produs: " + e.getLValue() + " " + e.getRValue() + " set: " + evalList.get(i));
 					e.setRValue(evalList.get(i));
+					i++;
 				}
-				i++;
+			
 			}
 		}
 		else
@@ -63,9 +65,11 @@ public class EvaluareExpresie
 			{		
 				if(e.getRValue().contains("MULT") == false)
 				{
+					System.out.println("Not produs: " + e.getLValue() + " " + e.getRValue() + " set: " + evalList.get(i));
 					e.setRValue(evalList.get(i));
+					i++;
 				}
-				i++;
+				
 			}
 		}
 		
@@ -99,7 +103,7 @@ public class EvaluareExpresie
 		{
 			if(mDr.group(1).contains("Sel"))
 			{
-				varOpField = mDr.group(1).replace("Sel", "") +  mDr.group(2).replaceAll("[\\[\\])]*", "") + ") SEL";
+				varOpField = mDr.group(1).replace("Sel", "") +  mDr.group(2).replaceAll("[\\[\\])]*", "") + ") Sel";
 			}
 			else
 			{
@@ -131,9 +135,9 @@ public class EvaluareExpresie
 			e = it.next();
 			if(e.getRValue().contains("MULT") == false)
 			{
-				if(e.getRValue().contains("SEL"))
+				if(e.getRValue().contains("Sel"))
 				{
-					restrictiiOperatiiSimple.add(e.getRValue());
+					restrictiiOperatiiSimple.add(e.getRValue().replace("Sel", ""));
 				}
 				else
 				{
@@ -142,33 +146,41 @@ public class EvaluareExpresie
 			}
 			else
 			{
-				field = e.getRValue().substring(e.getRValue().indexOf('(') + 1,e.getRValue().length() -1);
-				if(e.getRValue().contains("SEL"))
+				if(e.getRValue().contains("Sel"))
 				{
+					field = e.getRValue().replace("Sel", "").trim();
+					field = field.substring(field.indexOf('(') + 1,field.length() -1);
 					restrictiiProdus.add(field);
 				}
 				else
 				{
+					field = e.getRValue().substring(e.getRValue().indexOf('(') + 1,e.getRValue().length() -1);
 					campuriProdus += ", " + field;
 				}
 			}
 		}
 		
 		cmdMySql += "\n";
+		String restrictiiCmdMySql = "";
 		for(String s : restrictiiOperatiiSimple)
 		{
-			cmdMySql +=  ", " + s;
+			restrictiiCmdMySql +=  ", " + s;
 		}
 		
 		cmdMySql = cmdMySql.replaceFirst(",", "");
+		restrictiiCmdMySql = restrictiiCmdMySql.replaceFirst(",", "");
+		cmdMySql += restrictiiCmdMySql;
+		
 		operatiiSimple = cmdMySql;
 		
 		campuriProdus += "\n";
+		String restrictiiCmdProdus = "";
 		for(String s : restrictiiProdus)
 		{
-			campuriProdus += ", " + s ;
+			restrictiiCmdProdus += ", " + s ;
 		}
-		
+		restrictiiCmdProdus = restrictiiCmdProdus.replaceFirst(",", "");
+		campuriProdus += restrictiiCmdProdus;
 		campuriProdus = campuriProdus.replaceFirst(",", "");
 	}
 	
@@ -192,4 +204,21 @@ public class EvaluareExpresie
 		return (float)(eval.getValue());
 	}
 
+/*	public static void main(String[] args)
+	{
+		String formula = "x1=MULT(Acceleratie) x2=MULT(Sel[Masa]) x3=SUM(Masa) x1*(x2/x3)";
+		EvaluareExpresie eval = new EvaluareExpresie(formula);
+		
+		//eval.
+		
+		for (ElementeAtribuire e : eval.getElemente())
+		{
+			System.out.println(e.getLValue() + " " + e.getRValue());
+		}
+		
+		System.out.println(eval.getOperatiiSimple());
+		System.out.println(eval.getCampuriProdus());
+	}*/
 }
+
+

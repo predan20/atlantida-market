@@ -41,9 +41,7 @@ public class Jucator extends BazaDeDate
 			
 			while (rezultat.next())
 			{
-				numeColoane.add(rezultat.getString(1));
-				System.out.println(rezultat.getString(1));
-				
+				numeColoane.add(rezultat.getString(1));				
 				i++;
 			}
 			
@@ -72,7 +70,6 @@ public class Jucator extends BazaDeDate
 				comanda = "INSERT INTO Jucatori (ID, UTILIZATOR, PAROLA, EMAIL, NR_CICLURI, TIP_JUCATOR, NR_PUNCTE) " +
 						"VALUES(0, '" + numeUtilizator + "','" + parolaUtilizator + "','" + emailUtilizator + "', -1, 0, " + nrPuncte + ");";
 				
-				System.out.println("Comanda -> " + comanda);
 				decl.addBatch(comanda);
 				decl.executeBatch();
 			}

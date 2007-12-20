@@ -28,8 +28,8 @@ public class ThreadVanzare extends ConnectionAbstractThread
 		piata.creareConexiune();
 		pretVanzare = piata.getValoareElement(numeUtilizator, idElem);
 		System.out.println(pretVanzare);
+		piata.modificareNrPuncte(numeUtilizator, idElem, "*");
 		idNou = piata.mutareElement(numeUtilizator, "Piata", idElem);
-		piata.modificareNrPuncte("Piata", idNou, "*");
 		piata.inchidereConexiune();
 		
 		Jucatori_online jucatorOnline = new Jucatori_online("Joc");

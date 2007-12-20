@@ -40,12 +40,11 @@ public class ThreadLogout extends ConnectionAbstractThread
 			jucatorOnline.stergereInregistrare(numeUtilizator);
 						
 			jucatorOnline.inchidereConexiune();
-			
-			System.out.println("Logout: Autentificare: " + numeUtilizator + " -> " + parolaUtilizator);
+
 		}
 		else
 		{
-			System.out.println("Nu exista " + numeUtilizator + parolaUtilizator);
+			//eroare logout
 		}
 		jucator.inchidereConexiune();
 		return dateUtilizator;

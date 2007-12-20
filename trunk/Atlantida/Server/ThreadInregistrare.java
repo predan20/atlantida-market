@@ -63,7 +63,6 @@ public class ThreadInregistrare extends ConnectionAbstractThread
 		jucatorOnline.inserareInregistrare(numeUtilizator);
 		jucatorOnline.inchidereConexiune();
 		
-		System.out.println("Inregistare: " + numeUtilizator + " -> " + parolaUtilizator);
 		//ADAUGAM in numeColoane, pe ultimul rand si numar de puncte initial al jucatorului
 
 		dateUtilizator = new ArrayList<String>();
