@@ -34,9 +34,7 @@ public class ThreadCumparare extends ConnectionAbstractThread
 			Licitatie licitatie = new Licitatie("Inventare");
 			licitatie.creareConexiune();
 			timpStartLicitatie = licitatie.inserareJucatorLicitatie(idElem, numeUtilizator, pretCumparare);
-			System.out.println("Timpul de start returnat: " + timpStartLicitatie);
 			//{
-				System.out.println("\n\nTimpul de start: " + timpStartLicitatie + "\n\n");
 				secundeRamase = licitatie.getSecundeRamaseDinLicitatie(timpStartLicitatie);
 				dateUtilizator.add(String.valueOf(secundeRamase));
 			//}
@@ -50,7 +48,6 @@ public class ThreadCumparare extends ConnectionAbstractThread
 			//idNou = piata.mutareElement("Piata", numeUtilizator, idElem);
 			//piata.modificareNrPuncte(numeUtilizator, idNou, "/");
 			
-			System.out.println("Bah, io pornesc licitatia!");
 		}
 		else if(verificare != -1)
 		{

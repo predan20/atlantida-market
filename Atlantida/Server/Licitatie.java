@@ -22,8 +22,7 @@ public class Licitatie extends BazaDeDate
 			
 			comanda = "INSERT INTO Licitatii (ID_ELEM ,NUME ,OFERTA ,TIMP_START) VALUES(" 
 					  + idElem + ",'" + numeUtilizator + "'," + oferta + ",'" + timpStart + "');";
-			
-			System.out.println("Insrare jucator in licitatie: " + comanda);
+
 			decl.addBatch(comanda);
 			decl.executeBatch();
 			return timpStart;
@@ -54,7 +53,6 @@ public class Licitatie extends BazaDeDate
 			{
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat timp = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-				System.out.println("\n\nOra exacta: " + timp.format(calendar.getTime()) + "\n\n");
 				new CeasLicitatii(Server.timpLicitatie);
 				
 				return timp.format(calendar.getTime());

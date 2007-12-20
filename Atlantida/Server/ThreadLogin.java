@@ -55,12 +55,10 @@ public class ThreadLogin extends ConnectionAbstractThread
 			dateUtilizator.add(0,coloane);
 			inventarUtilizator.inchidereConexiune();
 
-			System.out.println("Login: Autentificare: " + numeUtilizator + " -> " + parolaUtilizator);
 		}
 		else
 		{
 			jucator.inchidereConexiune();
-			System.out.println("Nu exista "+numeUtilizator + parolaUtilizator);
 		}
 		
 		return dateUtilizator;

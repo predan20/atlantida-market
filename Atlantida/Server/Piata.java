@@ -108,8 +108,6 @@ public class Piata extends BazaDeDate
 					comanda = comanda.substring(0, comanda.length() - 1);
 					comanda += ");";
 					
-					System.out.println("Comanda = " + comanda);
-					
 					declInsert.addBatch(comanda);
 					declInsert.executeBatch();
 					
@@ -172,7 +170,6 @@ public class Piata extends BazaDeDate
 					element += rezultat.getString(i) + " ";
 				}
 				elementeInventar.add(element);
-				System.out.println(element);
 			}
 		
 			return elementeInventar;
@@ -253,7 +250,7 @@ public class Piata extends BazaDeDate
 				valoriProp =  valoriProp.substring(0, valoriProp.length() - 1) + ");";
 				
 				comanda = "INSERT INTO " + numeUtilizator + " () VALUES" + valoriProp;
-				System.out.println("Comanda in Random: " + comanda);
+
 				decl.addBatch(comanda);
 				decl.executeBatch();
 

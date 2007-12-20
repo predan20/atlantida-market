@@ -86,7 +86,7 @@ public class Elemente_atomice extends BazaDeDate
 			String comanda = "";
 			ResultSet rezultat = null;
 			
-			comanda = "SELECT formula FROM Elemente_atomice;";
+			comanda = "SELECT formula FROM Elemente_atomice ORDER BY id ASC;";
 
 			rezultat = decl.executeQuery(comanda);
 			
