@@ -30,7 +30,7 @@ class CalculatorPanel extends JPanel implements ActionListener
 	  private  JPanel p;
 	  
 	  private String numeElemente =  "Restrictie";
-	  private String fields = "MasaSanatateRata_invConsumPropSpRandament";
+	  private String fields = "MasaSanatateRata_invConsumRandament";
 	  
 	  private String fieldsOp = "SUMAVGMINMAXMULT";
 	  
@@ -45,9 +45,14 @@ class CalculatorPanel extends JPanel implements ActionListener
 	  private int fieldOpCounter = 1;
 	  
 	  private JFrame frmNumeElemente;
+	  
+	  private String numePropSpec = "";
 	   
-  public CalculatorPanel() {
-    setLayout(new BorderLayout());
+  public CalculatorPanel(String numePropSpec) 
+  {
+	this.numePropSpec = numePropSpec;
+	fields += this.numePropSpec;
+	setLayout(new BorderLayout());
 
     display = new JTextField("0");
     display.setEditable(false);
@@ -62,7 +67,7 @@ class CalculatorPanel extends JPanel implements ActionListener
     addButton(p, "(");
     addButton(p, "MIN");
     addButton(p,"Consum");
-    addButton(p,"PropSp");
+    addButton(p,numePropSpec);
 
     buttons = "456*";
     for (int i = 0; i < buttons.length(); i++)
@@ -136,8 +141,8 @@ class CalculatorPanel extends JPanel implements ActionListener
     	atribuiri = "";
     	expresieFinala = "";
     	setButtons(digits + fieldsOp + paran,true);
-    	setButtons(mathOp + fields + fieldsOp + numeElemente + ")", false);
-    	
+    	setButtons(mathOp + fields + numeElemente + ")", false);
+    	fieldOpCounter = 1;
     	display.setText("");
     }
     else
@@ -164,13 +169,13 @@ class CalculatorPanel extends JPanel implements ActionListener
     			
     			if(expression.charAt(expression.length() - 1) == '(')
     			{
-    				atribuiri += s + ")\n";
+    				atribuiri += s + ") ";
     			
     				expression += s +")";
     			}
     			else
     			{
-    				atribuiri += s + "])\n";
+    				atribuiri += s + "]) ";
         			
     				expression += s +"])";
     			}
@@ -280,25 +285,25 @@ class CalculatorPanel extends JPanel implements ActionListener
 }
 class CalculatorFrame extends JFrame {
 	static final long serialVersionUID = 0;
-  public CalculatorFrame() {
+  public CalculatorFrame(String numePropSpec) {
     setTitle("Calculator");
     setSize(700, 400);
 
     Container contentPane = getContentPane();
-    contentPane.add(new CalculatorPanel());
+    contentPane.add(new CalculatorPanel(numePropSpec));
   }
   
-	public static void main(String[] args)
+/*	public static void main(String[] args)
 	{
 		CalculatorFrame calculatorFrame =  new CalculatorFrame();
 		calculatorFrame.show();
 		
 		calculatorFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-	/*	
+		
 		EvaluareExpresie eval = new EvaluareExpresie();
 		eval.evalTest("x1=SUM(Masa)\nx2=MIN(PropSp)\nx3=SUM(Randament)\nx4=MULT(Sanatate)\nx5=AVG(Masa)\n2+x1+x2*(x3+x4-x5)");
-		*/
-	}
+		
+	}*/
 }
 
            
