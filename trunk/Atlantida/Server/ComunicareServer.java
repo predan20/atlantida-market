@@ -77,6 +77,7 @@ public class ComunicareServer
 		{
 			for (int i = 0; i < colectieScriere.size(); i++)
 			{
+				System.out.println(colectieScriere.get(i));
 				buferScriere.write(colectieScriere.get(i) + "\n");
 			}
 			

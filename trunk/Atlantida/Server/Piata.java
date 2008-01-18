@@ -31,6 +31,7 @@ public class Piata extends BazaDeDate
 			rezultat.first();
 			if (rezultat.getInt("NR_COMP") == 1 && rezultat.getInt("PARINTE") == -1)
 			{
+				System.out.println("Intra in if-ul din mutareElem");
 				//Element atomic, deci copiem doar linia din sursa in dest
 				comanda = "INSERT INTO " + inventarDestinatie + " SELECT * FROM " + inventarSursa + 
 						" WHERE id=" + idElem + " ON DUPLICATE KEY UPDATE id=" + (max + 1) + ";";
@@ -42,9 +43,11 @@ public class Piata extends BazaDeDate
 			}
 			else
 			{
+				System.out.println("Intra in else-ul din mutareElem");
 				//In cazul elementelor compuse, copiem intreaga structura (fii....)
 				this.mutareElementCompus(inventarSursa, inventarDestinatie, idElem, max);
 			}
+			
 			return (max+1);
 		}
 		catch (Exception e) 
@@ -241,21 +244,34 @@ public class Piata extends BazaDeDate
 			}
 			else
 			{
-				max = this.getMaxID(numeUtilizator);
-				start = rezultat.findColumn("MASA");
-				valoriProp = "(" + (max + 1) + ",'" + rezultat.getString("NUME") + "',-1," + rezultat.getString("NR_PUNCTE") + ",1,";
-				for(i = start; i <= rezultat.getMetaData().getColumnCount(); i++)
+				ArrayList<Float> propRandom;
+				do
 				{
-					valoriProp += this.valoareRandom(rezultat.getFloat(i)) + ",";
-				}
+					//rezultat.first();
+					System.out.println("\n\nCalculare prop random!");
+					propRandom = new ArrayList<Float>();
+					comanda = "";
+					float proprietateRandom = 0f;
+					max = this.getMaxID(numeUtilizator);
+					start = rezultat.findColumn("MASA");
+					
+					valoriProp = "(" + (max + 1) + ",'" + rezultat.getString("NUME") + "',-1," + rezultat.getString("NR_PUNCTE") + ",1,";
+					
+					for(i = start; i <= rezultat.getMetaData().getColumnCount(); i++)
+					{
+						proprietateRandom = this.valoareRandom(rezultat.getFloat(i));
+						valoriProp +=  proprietateRandom + ",";
+						propRandom.add(proprietateRandom);
+					}
+					
+					valoriProp =  valoriProp.substring(0, valoriProp.length() - 1) + ");";
+					
+					comanda = "INSERT INTO " + numeUtilizator + " () VALUES" + valoriProp;
+				} while (!this.verificarePuncte(propRandom)); 
 				
-				valoriProp =  valoriProp.substring(0, valoriProp.length() - 1) + ");";
-				
-				comanda = "INSERT INTO " + numeUtilizator + " () VALUES" + valoriProp;
-
 				decl.addBatch(comanda);
 				decl.executeBatch();
-
+				
 				return (max+1);
 			}
 		}
@@ -266,10 +282,33 @@ public class Piata extends BazaDeDate
 		}
 	}
 	
+	public boolean verificarePuncte(ArrayList<Float> propRandom)
+	{
+		float sumaProp = 0f;
+		
+		sumaProp = propRandom.get(4) - propRandom.get(0) - propRandom.get(1);
+		
+		for (int i = 5; i < propRandom.size(); i++)
+		{
+			sumaProp += propRandom.get(i);
+		}
+		
+		if (sumaProp <= 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
 	public float valoareRandom(float valoarePropMaxima)
 	{
 		return (float)(Math.random() * valoarePropMaxima);
 	}
+	
+	
 	
 	public boolean actualizareNrPuncte(String numeUtilizator, int idElem)
 	{
@@ -292,7 +331,7 @@ public class Piata extends BazaDeDate
 			
 			numarPuncte = (rezultat.getFloat("SANATATE") - rezultat.getFloat("MASA") - rezultat.getFloat("CONSUM") + 
 					sumaPropSpeciale) * rezultat.getFloat("RANDAMENT") * rezultat.getFloat("RATA_INV") * 
-					rezultat.getFloat("NR_COMP") * 100;
+					rezultat.getFloat("NR_COMP") * 10;
 			System.out.println(numarPuncte);
 			comanda = "UPDATE " + numeUtilizator + " SET nr_puncte=" + numarPuncte + " WHERE id=" + idElem + ";";
 			update.addBatch(comanda);
