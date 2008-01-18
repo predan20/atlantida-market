@@ -21,10 +21,6 @@ public class ThreadCombinare extends ConnectionAbstractThread
 		
 		CombinareElemente combinareElemente = new CombinareElemente(numeUtilizator, idElemente);
 		int idParinte = combinareElemente.creareParinte();
-//		//expresie formula
-//		String expr = "x1=SUM(Masa)\nx2=MIN(PropSp)\nx3=SUM(Randament)\nx4=MULT(Sanatate)\nx5=AVG(Masa)\n2+x1+x2*(x3+x4-x5)";
-//		
-//		combinareElemente.calculValoareProprSpeciala(expr, idParinte);
 		
 		Jucatori_online jucatorOnline = new Jucatori_online("Joc");
 		jucatorOnline.creareConexiune();
@@ -50,5 +46,4 @@ public class ThreadCombinare extends ConnectionAbstractThread
 		
 		return dateUtilizator;
 	}
-
 }

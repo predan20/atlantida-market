@@ -65,20 +65,29 @@ public class ThreadCumparare extends ConnectionAbstractThread
 			jucator.creareConexiune();
 			System.out.println("Bah. mie imi cam vine sa actualizez ceva!");
 			jucator.actualizareCapitalJucator(numeUtilizator, pretCumparare, "-");
+			//Adaugare numar de puncte
+			dateUtilizator.add(jucator.getNumarPuncte(numeUtilizator));
 			jucator.inchidereConexiune();
 			
 			for(String id : dateUtilizator)
-			System.out.println("Secunde returnate la cumparare: " + id);
+				System.out.println("Secunde returnate la cumparare: " + id);
 		}
 		else
 		{
+			System.out.println("Retragere din licitatie");
+			String oferta = "";
 			numeUtilizator = dateUtilizator.get(1);
 			idElem = Integer.parseInt(dateUtilizator.get(2));
 			
 			Licitatie licitatie = new Licitatie("Inventare");
 			licitatie.creareConexiune();
-			licitatie.stergereJucatorDinLicitatie(numeUtilizator, idElem);
+			oferta = licitatie.stergereJucatorDinLicitatie(numeUtilizator, idElem);
 			licitatie.inchidereConexiune();
+			
+			Jucatori_online jucatori_online = new Jucatori_online("Joc");
+			jucatori_online.creareConexiune();
+			jucatori_online.actualizareCapitalJucator(numeUtilizator, Float.parseFloat(oferta), "+");
+			jucatori_online.inchidereConexiune();
 			dateUtilizator = new ArrayList<String>();
 		}
 		

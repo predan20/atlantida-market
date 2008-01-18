@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
 import com.mysql.jdbc.ResultSetMetaData;
 
 
@@ -723,9 +722,43 @@ public class Inventar_utilizator extends BazaDeDate
 		}
 	}
 	
-	public boolean actualizareNume()
+	public boolean actualizareNume(ArrayList<String> numeElemente)
 	{
+		String[] informatii;
+		String numeUtilizator = numeElemente.get(0);
+		numeElemente.remove(0);
+		numeElemente.remove(numeElemente.size() - 1);
+		String numeElem = "";
+		String idElem = "";
 		
-		return true;
+		try
+		{
+			String comanda = "";
+			Statement decl = this.conn.createStatement();
+			
+			System.out.println("\n\nIn acutalizare nume!");
+			
+			for (int i = 0; i < numeElemente.size(); i++)
+			{
+				informatii = numeElemente.get(i).split("'[^']+'");
+				System.out.println("+" + numeElemente.get(i) + "+");
+				numeElem = informatii[0];
+				idElem = informatii[1];
+				
+				comanda = "UPDATE " + numeUtilizator + " SET nume = " + numeElem + " WHERE id = " + idElem + ";";
+				
+				System.out.println("Comanda: " + comanda);
+				
+				decl.addBatch(comanda);
+				decl.executeBatch();
+			}
+			
+			return true;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

@@ -60,6 +60,7 @@ public class ThreadInventar extends ConnectionAbstractThread
 			
 			Inventar_utilizator inventar = new Inventar_utilizator("Inventare");
 			inventar.creareConexiune();
+			inventar.actualizareNume(dateUtilizator);
 			numeColoane = inventar.getNumeColoane(numeUtilizator);
 			dateUtilizator = inventar.getInventar(numeUtilizator, numeColoane);
 			inventar.inchidereConexiune();

@@ -56,30 +56,35 @@ public class ThreadAdministrator extends ConnectionAbstractThread
 			
 			Elemente_atomice elem = new Elemente_atomice("Joc");
 			elem.creareConexiune();
-			elem.inserareInregistrare(numeElement, propSpeciala, formula, Float.parseFloat(valMaxima), Float.parseFloat(pretElementAtomic));
-			elem.inchidereConexiune();
-			
-			admin.actualizareInventarUtilizator(propSpeciala);
-			admin.inchidereConexiune();
-			
-			admin = new Administrator("Inventare");
-			admin.creareConexiune();
-			admin.actualizareInventare(propSpeciala);
-			admin.inchidereConexiune();
-			
-			Piata piata = new Piata("Inventare");
-			piata.creareConexiune();
-			piata.adaugareElementAtomicNou(numeElement, propSpeciala, Float.parseFloat(valMaxima), Float.parseFloat(pretElementAtomic));
-			piata.inchidereConexiune();
+			if (elem.validarePropSpec(propSpeciala))
+			{
+				elem.inserareInregistrare(numeElement, propSpeciala, formula, Float.parseFloat(valMaxima), Float.parseFloat(pretElementAtomic));
+				elem.inchidereConexiune();
+				
+				admin.actualizareInventarUtilizator(propSpeciala);
+				admin.inchidereConexiune();
+				
+				admin = new Administrator("Inventare");
+				admin.creareConexiune();
+				admin.actualizareInventare(propSpeciala);
+				admin.inchidereConexiune();
+				
+				Piata piata = new Piata("Inventare");
+				piata.creareConexiune();
+				piata.adaugareElementAtomicNou(numeElement, propSpeciala, Float.parseFloat(valMaxima), Float.parseFloat(pretElementAtomic));
+				piata.inchidereConexiune();
+			}
+			else
+			{
+				dateUtilizator = new ArrayList<String>();
+				dateUtilizator.add("insucces");
+				elem.inchidereConexiune();
+			}
 		}
 		else
 		{
 			admin.inchidereConexiune();
 		}
-		
-//		dezintegrare.creareConexiune();
-//		dezintegrare.verificareDezintegrare("ionEla12");
-//		dezintegrare.inchidereConexiune();
 		
 		return dateUtilizator;
 	}

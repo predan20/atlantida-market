@@ -104,5 +104,34 @@ public class Elemente_atomice extends BazaDeDate
 		}
 	}
 
+	public boolean validarePropSpec(String propSpec)
+	{
+		try
+		{
+			boolean nuExista = true;
+			Statement decl = this.conn.createStatement();
+			ResultSet rezultat;
+			String comanda = "";
+			
+			comanda = "SELECT prop_spec FROM Elemente_atomice;";
+			rezultat = decl.executeQuery(comanda);
+			
+			while (rezultat.next())
+			{
+				if (rezultat.getString(1).equalsIgnoreCase(propSpec))
+				{
+					nuExista = false;
+				}
+			}
+			
+			return nuExista;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 }
 
