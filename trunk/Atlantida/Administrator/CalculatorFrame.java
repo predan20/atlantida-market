@@ -125,6 +125,7 @@ class CalculatorPanel extends JPanel implements ActionListener
 	  String name = "";
 	  for (int i= 0; i< components.length; i++)
 	  {
+		  
 		  name = ((JButton)components[i]).getText();
 		  if(type.contains(name))
 		  {
@@ -140,7 +141,7 @@ class CalculatorPanel extends JPanel implements ActionListener
     	expression = "";
     	atribuiri = "";
     	expresieFinala = "";
-    	setButtons(digits + fieldsOp + paran,true);
+    	setButtons(digits + fieldsOp + paran + "=",true);
     	setButtons(mathOp + fields + numeElemente + ")", false);
     	fieldOpCounter = 1;
     	display.setText("");
@@ -249,6 +250,10 @@ class CalculatorPanel extends JPanel implements ActionListener
 		    							expresieFinala = atribuiri;
 		    							
 		    							System.out.println(expresieFinala);
+		    							Main.formula = expresieFinala;
+		    							
+		    							setButtons(numeElemente+numePropSpec+fieldOpCounter+fields+fieldsOp+mathOp+paran+digits+"=",false);
+		    								
 		    						}
 	    						}
 	    					}
@@ -285,25 +290,31 @@ class CalculatorPanel extends JPanel implements ActionListener
 }
 class CalculatorFrame extends JFrame {
 	static final long serialVersionUID = 0;
+	String formula = "";
+
   public CalculatorFrame(String numePropSpec) {
     setTitle("Calculator");
     setSize(700, 400);
-
+    CalculatorPanel calculatorPanel = new CalculatorPanel(numePropSpec);
+    this.formula = calculatorPanel.getExpresieFinala();
     Container contentPane = getContentPane();
-    contentPane.add(new CalculatorPanel(numePropSpec));
+    contentPane.add(calculatorPanel);
+    
   }
-  
-/*	public static void main(String[] args)
+	public String getFormula() {
+		return formula;
+	}  
+	public static void main(String[] args)
 	{
-		CalculatorFrame calculatorFrame =  new CalculatorFrame();
+		CalculatorFrame calculatorFrame =  new CalculatorFrame("ceva");
 		calculatorFrame.show();
 		
 		calculatorFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		EvaluareExpresie eval = new EvaluareExpresie();
+		/*EvaluareExpresie eval = new EvaluareExpresie();
 		eval.evalTest("x1=SUM(Masa)\nx2=MIN(PropSp)\nx3=SUM(Randament)\nx4=MULT(Sanatate)\nx5=AVG(Masa)\n2+x1+x2*(x3+x4-x5)");
-		
-	}*/
+		*/
+	}
 }
 
            
