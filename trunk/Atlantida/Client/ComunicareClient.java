@@ -81,7 +81,7 @@ public class ComunicareClient
 		{
 			for (int i = 0; i < colectieScriere.size(); i++)
 			{
-				bufferScriere.write(colectieScriere.get(i) + "\n");
+				bufferScriere.write(colectieScriere.get(i).replaceAll("'", "'") + "\n");
 			}
 			
 			bufferScriere.flush();		
