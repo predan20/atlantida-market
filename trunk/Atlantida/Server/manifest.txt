@@ -1,0 +1,2 @@
+Main-Class: Server 
+Class-Path: include/jep-2.4.1.jar include/mysql-connector-java-5.1.5-bin.jar
